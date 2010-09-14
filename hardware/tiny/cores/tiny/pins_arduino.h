@@ -29,6 +29,12 @@
 
 #include <avr/pgmspace.h>
 
+#define PIN_A5                    (5)
+#define PIN_A6                    (4)
+
+#define CORE_OC1A_PIN             PIN_A6
+#define CORE_OC1B_PIN             PIN_A5
+
 #define NOT_A_PIN 0
 #define NOT_A_PORT 0
 

@@ -23,7 +23,7 @@
 #include <inttypes.h>
 #include <stdio.h> // for size_t
 
-#include "WString.h"
+// fix #include "WString.h"
 
 #define DEC 10
 #define HEX 16
@@ -41,7 +41,7 @@ class Print
     virtual void write(const char *str);
     virtual void write(const uint8_t *buffer, size_t size);
     
-    void print(const String &);
+    // fix void print(const String &);
     void print(const char[]);
     void print(char, int = BYTE);
     void print(unsigned char, int = BYTE);
@@ -51,7 +51,7 @@ class Print
     void print(unsigned long, int = DEC);
     void print(double, int = 2);
 
-    void println(const String &s);
+    // fix void println(const String &s);
     void println(const char[]);
     void println(char, int = BYTE);
     void println(unsigned char, int = BYTE);
