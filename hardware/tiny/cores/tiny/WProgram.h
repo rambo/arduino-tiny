@@ -10,8 +10,8 @@
 #include "wiring.h"
 
 #ifdef __cplusplus
-// fix #include "WString.h"
-// fix? rmv? #include "HardwareSerial.h"
+#include "WString.h"
+#include "HardwareSerial.h"
 
 uint16_t makeWord(uint16_t w);
 uint16_t makeWord(byte h, byte l);

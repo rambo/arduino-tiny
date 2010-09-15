@@ -180,10 +180,11 @@ void init()
 	// enable timer 0 overflow interrupt
 	sbi(TIMSK0, TOIE0);
 
-	// timers 1 is used for phase-correct hardware pwm
+	// timer 1 is used for phase-correct hardware pwm
 	// this is better for motors as it ensures an even waveform
 	// note, however, that fast pwm mode can achieve a frequency of up
 	// 8 MHz (with a 16 MHz clock) at 50% duty cycle
+
 	// set timer 1 prescale factor to 64
 	sbi(TCCR1B, CS11);
 	sbi(TCCR1B, CS10);

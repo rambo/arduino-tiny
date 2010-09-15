@@ -29,6 +29,8 @@
 
 #include <avr/pgmspace.h>
 
+/* fix: Move to core_pins.h ... */
+
 #define PIN_A5                    (5)
 #define PIN_A6                    (4)
 
@@ -43,6 +45,8 @@
 #define TIMER0B 2
 #define TIMER1A 3
 #define TIMER1B 4
+
+/* ...fix */
 
 //changed it to uint16_t to uint8_t
 extern const uint8_t PROGMEM port_to_mode_PGM[];
