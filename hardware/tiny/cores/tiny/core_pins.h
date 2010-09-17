@@ -47,7 +47,31 @@
 
 
 // fix? rmv? #define CORE_NUM_ANALOG		12
-// fix? rmv? #define CORE_NUM_PWM		7
+
+#define CORE_NUM_PWM                    (4)
+
 // fix? rmv? #define CORE_NUM_INTERRUPT	4
+
+#define PIN_B0  ( 0)
+#define PIN_B1  ( 1)
+#define PIN_B2  ( 2)
+#define PIN_A7  ( 3)
+#define PIN_A6  ( 4)
+#define PIN_A5  ( 5)
+#define PIN_A4  ( 6)
+#define PIN_A3  ( 7)
+#define PIN_A2  ( 8)
+#define PIN_A1  ( 9)
+#define PIN_A0  (10)
+
+#define CORE_OC0A_PIN  PIN_B2
+#define CORE_OC0B_PIN  PIN_A7
+#define CORE_OC1A_PIN  PIN_A6
+#define CORE_OC1B_PIN  PIN_A5
+
+#define CORE_PWM0_PIN  CORE_OC0A_PIN  // D0, 0
+#define CORE_PWM1_PIN  CORE_OC0B_PIN  // D0, 0
+#define CORE_PWM2_PIN  CORE_OC1A_PIN
+#define CORE_PWM3_PIN  CORE_OC1B_PIN
 
 #endif

@@ -37,38 +37,35 @@
 
 // ATMEL ATTINY84 / ARDUINO
 //
-//                   +-\/-+
-//             VCC  1|    |14  GND
-//      (D  0) PB0  2|    |13  AREF (D 10)
-//      (D  1) PB1  3|    |12  PA1  (D  9) 
-//      	     PB3  4|    |11  PA2  (D  8) 
-//  PWM (D  2) PB2  5|    |10  PA3  (D  7) 
-//  PWM (D  3) PA7  6|    |9   PA4  (D  6) 
-//  PWM (D  4) PA6  7|    |8   PA5  (D  5) PWM
-//                   +----+
+//                          +-\/-+
+//                    VCC  1|    |14  GND
+//      (D  0)        PB0  2|    |13  AREF (D 10)
+//      (D  1)        PB1  3|    |12  PA1  (D  9) 
+//      	            PB3  4|    |11  PA2  (D  8) 
+//  PWM (D  2) (INT0) PB2  5|    |10  PA3  (D  7) 
+//  PWM (D  3)        PA7  6|    |9   PA4  (D  6) 
+//  PWM (D  4)        PA6  7|    |8   PA5  (D  5) PWM
+//                          +----+
 
-#define PA 2
-#define PB 3
+#define PA 1  /*2*/
+#define PB 2  /*3*/
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-const uint8_t PROGMEM port_to_mode_PGM[] = {
-	NOT_A_PORT,
+const uint16_t PROGMEM port_to_mode_PGM[] = {
 	NOT_A_PORT,
 	&DDRA,
 	&DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
-	NOT_A_PORT,
+const uint16_t PROGMEM port_to_output_PGM[] = {
 	NOT_A_PORT,
 	&PORTA,
 	&PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
-	NOT_A_PORT,
+const uint16_t PROGMEM port_to_input_PGM[] = {
 	NOT_A_PORT,
 	&PINA,
 	&PINB,
