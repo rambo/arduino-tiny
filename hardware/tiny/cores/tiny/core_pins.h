@@ -64,6 +64,8 @@
 #define PIN_A1  ( 9)
 #define PIN_A0  (10)
 
+#define CORE_INT0_PIN  PIN_B2
+
 #define CORE_OC0A_PIN  PIN_B2
 #define CORE_OC0B_PIN  PIN_A7
 #define CORE_OC1A_PIN  PIN_A6

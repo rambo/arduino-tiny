@@ -46,7 +46,22 @@ volatile static voidFuncPtr intFunc[EXTERNAL_NUM_INTERRUPTS];
 
 void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode) {
   if(interruptNum < EXTERNAL_NUM_INTERRUPTS) {
+
+    /* bwc: If attachInterrupt is called in succession for the same 
+      interruptNum but a different userFunc then the following line 
+      is not safe.  Changing intFunc is not atomic.
     intFunc[interruptNum] = userFunc;
+    */
+    {
+      // save interrupt flag
+      uint8_t SaveSREG = SREG;
+      // disable interrupts
+      cli();
+      // access the shared data
+      intFunc[interruptNum] = userFunc;
+      // restore the interrupt flag
+      SREG = SaveSREG;
+    }
     
     // Configure the interrupt mode (trigger on low input, any change, rising
     // edge, or falling edge).  The mode constants were chosen to correspond
