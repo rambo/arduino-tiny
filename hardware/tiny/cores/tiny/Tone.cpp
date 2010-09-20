@@ -32,11 +32,19 @@ Version Modified By Date     Comments
 
 *************************************************/
 
+#define DEBUG_TONE 1
+
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <stddef.h>
 #include <wiring.h>
 #include <pins_arduino.h>
+
+#if DEBUG_TONE
+uint16_t debug_tone_last_OCR1A;
+uint8_t debug_tone_last_TCCR1A;
+uint8_t debug_tone_last_TCCR1B;
+#endif
 
 
 // timerx_toggle_count:
@@ -117,17 +125,17 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       /* Set the Output Compare Register (rounding up) */
 
       #if ( F_CPU <= 1000000 )
-        OCR1A = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L - 1L;
+        OCR1A = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L;
       #elif ( F_CPU <= 8000000 )
         if ( frequency > 60 )
         {
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L - 1L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L;
           cs = (0<<CS12) | (0<<CS11) | (1<<CS10);
         }
         else
         {
           /* fix: untested */
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 64L) + 1L ) / 2L - 1L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 64L) + 1L ) / 2L;
           cs = (0<<CS12) | (1<<CS11) | (1<<CS10);
         }
         OCR1A = ocr;
@@ -135,12 +143,12 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
         /* fix: untested */
         if ( frequency > 122 )
         {
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L - 1L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L;
           cs = (0<<CS12) | (0<<CS11) | (1<<CS10);
         }
         else
         {
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 256L) + 1L ) / 2L - 1L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 256L) + 1L ) / 2L;
           cs = (1<<CS12) | (0<<CS11) | (0<<CS10);
         }
         OCR1A = ocr;
@@ -170,6 +178,10 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
         }
       }
 
+      #if DEBUG_TONE
+        debug_tone_last_OCR1A = OCR1A;
+      #endif
+
       /* Start the clock... */
 
       #if ( F_CPU <= 1000000 )
@@ -183,6 +195,11 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
         TCCR1B = (TCCR1B & ToneClockSelectMask) | cs;
       #else
         #error "Unsupported clock frequency.  Please add code here.  See 'Arduino - Buzzer Evaluation.xlsx' for details."
+      #endif
+
+      #if DEBUG_TONE
+        debug_tone_last_TCCR1A = TCCR1A;
+        debug_tone_last_TCCR1B = TCCR1B;
       #endif
     }
     else
