@@ -219,8 +219,17 @@ static void noToneInternal( void )
   /* Turn off all interrupts */
   TIMSK1 = (0<<ICIE1) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
-  /* Stop the clock */
-  TCCR1B = (TCCR1B & ToneClockSelectMask) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+  /* Stop the clock while we make changes. */
+  TCCR1B = (TCCR1B & ToneClockSelectMask) | (0<<CS12)|(0<<CS11)|(0<<CS10);
+
+  // Set Timer 1 exactly the same as init did...
+
+	// put timer 1 in 8-bit phase correct pwm mode
+	TCCR1A = (0<<COM1A1)|(0<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(1<<WGM10);
+
+  // set timer 1 prescale factor to 64
+  // and start the timer
+  TCCR1B = (0<<ICNC1) | (0<<ICES1) | (0<<WGM13)|(0<<WGM12) | (0<<CS12)|(1<<CS11)|(1<<CS10);
 
   /* Set the output low */
   if ( timer1_pin_register != NULL )
