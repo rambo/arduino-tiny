@@ -125,30 +125,30 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       /* Set the Output Compare Register (rounding up) */
 
       #if ( F_CPU <= 1000000 )
-        OCR1A = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L;
+        OCR1A = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L - 1L;
       #elif ( F_CPU <= 8000000 )
-        if ( frequency > 60 )
+        if ( frequency >= 62 )
         {
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L - 1L;
           cs = (0<<CS12) | (0<<CS11) | (1<<CS10);
         }
         else
         {
           /* fix: untested */
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 64L) + 1L ) / 2L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 64L) + 1L ) / 2L - 1L;
           cs = (0<<CS12) | (1<<CS11) | (1<<CS10);
         }
         OCR1A = ocr;
       #elif ( F_CPU <= 16000000 )
         /* fix: untested */
-        if ( frequency > 122 )
+        if ( frequency >= 123 )
         {
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 1L) + 1L ) / 2L - 1L;
           cs = (0<<CS12) | (0<<CS11) | (1<<CS10);
         }
         else
         {
-          ocr = ( (2L * F_CPU) / (frequency * 2L * 256L) + 1L ) / 2L;
+          ocr = ( (2L * F_CPU) / (frequency * 2L * 256L) + 1L ) / 2L - 1L;
           cs = (1<<CS12) | (0<<CS11) | (0<<CS10);
         }
         OCR1A = ocr;

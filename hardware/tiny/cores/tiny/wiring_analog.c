@@ -41,17 +41,19 @@ void analogReference(uint8_t mode)
 
 int analogRead(uint8_t pin)
 {
+  static const REFSMASK = (1<<REFS1) | (1<<REFS0);
+  static const REFSSHIFT = REFS0;
+  static const MUXMASK = (0<<MUX5) | (0<<MUX4) | (0<<MUX3) | (1<<MUX2) | (1<<MUX1) | (1<<MUX0);
+  static const MUXSHIFT = MUX0;
   uint8_t low, high;
+
+	if ( pin >= 11 ) pin -= 11; // allow for channel or pin numbers
 
   // set the analog reference (high two bits of ADMUX) and select the
   // channel (low 4 bits).  this also sets ADLAR (left-adjust result)
   // to 0 (the default).
-  ADMUX = (analog_reference << 6) | (pin & 0x3f); // more MUX
+	ADMUX = ((analog_reference << REFSSHIFT) & REFSMASK) | ((pin << MUXSHIFT) & MUXMASK);
   
-
-  // without a delay, we seem to read from the wrong channel
-  //delay(1);
-
   // start the conversion
   sbi(ADCSRA, ADSC);
 
