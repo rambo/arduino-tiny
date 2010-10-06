@@ -32,7 +32,7 @@ Version Modified By Date     Comments
 
 *************************************************/
 
-#define DEBUG_TONE 1
+#define DEBUG_TONE 0
 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -68,7 +68,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
     uint16_t ocr;
     uint8_t cs;
   #endif
-
+  
   if ( tone_pin == 255 )
   {
     /* Start with all interrupts turned off */
@@ -85,14 +85,22 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
 
     /* If the tone pin can be driven directly from the timer */
 
-    if ( _pin == CORE_OC1A_PIN )
+    if ( (_pin == CORE_OC1A_PIN) || (_pin == CORE_OC1B_PIN) )
     {
       /* Pin toggling is handled by the hardware */
       timer1_pin_register = NULL;
       timer1_pin_mask = 0;
 
-      /* Compare Output Mode = Toggle OC1A on Compare Match. */
-      TCCR1A = (0<<COM1A1)|(1<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(0<<WGM10);
+      if ( _pin == CORE_OC1A_PIN )
+      {
+        /* Compare Output Mode = Toggle OC1A on Compare Match. */
+        TCCR1A = (0<<COM1A1)|(1<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(0<<WGM10);
+      }
+      else // if ( _pin == CORE_OC1B_PIN )
+      {
+        /* Compare Output Mode = Toggle OC1A on Compare Match. */
+        TCCR1A = (0<<COM1A1)|(0<<COM1A0) | (0<<COM1B1)|(1<<COM1B0) | (0<<WGM11)|(0<<WGM10);
+      }
     }
     else
     {
@@ -170,8 +178,8 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
         /* Indicate to the interrupt service routine that we'll be running until further notice */
         timer1_toggle_count = -1;
 
-        /* All pins but the OC1A pin have to be driven by software */
-        if ( _pin != CORE_OC1A_PIN )
+        /* All pins but the OC1A / OC1B pins have to be driven by software */
+        if ( (_pin != CORE_OC1A_PIN) && (_pin != CORE_OC1B_PIN) )
         {
           /* Output Compare A Match Interrupt Enable */
           TIMSK1 |= (1<<OCIE1A);
