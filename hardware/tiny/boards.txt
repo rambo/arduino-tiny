@@ -23,10 +23,12 @@ attiny84at8.upload.maximum_size=8192
 attiny84at8.upload.speed=19200
 
 # Default clock (slowly rising power; long delay to clock; 8 MHz internal)
-# BOD disabled
+# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 64 ms; [CKSEL=0010 SUT=10]; default value
+# Brown-out detection disabled; [BODLEVEL=111]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
 
 attiny84at8.bootloader.low_fuses=0xE2
-attiny84at8.bootloader.high_fuses=0xDF
+attiny84at8.bootloader.high_fuses=0xD7
 attiny84at8.bootloader.extended_fuses=0xFF
 attiny84at8.bootloader.path=attiny84
 attiny84at8.bootloader.file=empty.hex
@@ -53,10 +55,13 @@ attiny84at1.upload.maximum_size=8192
 attiny84at1.upload.speed=19200
 
 # Default clock (slowly rising power; long delay to clock; 8 MHz internal; divide clock by 8)
-# BOD disabled
+# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 64 ms; [CKSEL=0010 SUT=10]; default value
+# Divide clock by 8 internally; [CKDIV8=0]
+# Brown-out detection disabled; [BODLEVEL=111]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
 
 attiny84at1.bootloader.low_fuses=0x62
-attiny84at1.bootloader.high_fuses=0xDF
+attiny84at1.bootloader.high_fuses=0xD7
 attiny84at1.bootloader.extended_fuses=0xFF
 attiny84at1.bootloader.path=attiny84
 attiny84at1.bootloader.file=empty.hex
