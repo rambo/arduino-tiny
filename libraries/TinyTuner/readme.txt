@@ -1,13 +1,13 @@
-========================================
+===========================================================================
 
   Copyright 2010 Rowdy Dog Software.
 
   This file is part of TinyTuner.
 
-  TinyTuner is free software: you can redistribute it and/or modify it under
-  the terms of the GNU Lesser General Public License as published by the Free
-  Software Foundation, either version 3 of the License, or (at your option)
-  any later version.
+  TinyTuner is free software: you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or (at
+  your option) any later version.
 
   TinyTuner is distributed in the hope that it will be useful, but WITHOUT 
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
@@ -17,7 +17,7 @@
   You should have received a copy of the GNU Lesser General Public License 
   along with TinyTuner.  If not, see <http://www.gnu.org/licenses/>.
 
-========================================
+===========================================================================
 
 Poor Man's Tiny Tuner
 
@@ -28,13 +28,13 @@ http://forums.adafruit.com/viewtopic.php?t=5078
 
 
 Introduction
-========================================
+===========================================================================
 
 Some stand-alone projects don't need a highly accurate processor clock and can benefit from a reduced component count.  Using the internal oscillator is perfect fit.  The only problem with the internal oscillator is that, from the factory, it can be up to 10% off.  For most applications, a 10% error in the clock can be a problem.  For example, the highest serial baud rate that can be reached when the clock is 4.5% off is 19200.  An application that needs a baud rate of 57600 isn't going to work.
 
 
 Techniques
-========================================
+===========================================================================
 
 There are a few different methods for tuning the internal oscillator.  These are the two I've tried...
 http://atmel.com/dyn/resources/prod_documents/doc2555.pdf
@@ -46,13 +46,13 @@ I have not actually tried the oPossum for one reason: assembly.  Inspired by the
 
 
 Overview
-========================================
+===========================================================================
 
 The idea is simple: Use the AVR processor to measure the time of some serial data.  If the serial data is accurately clocked (and generally it is) it is possible to adjust the internal oscillator until the measured time matches the expected time.  The core of the technique is TimeNineBits.  This function waits until a start bit arrives then counts until a stop bit arrives.  If the count is too high, the processor is running too fast.  If the count is too low, the processor is running too slow.
 
 
 Using
-========================================
+===========================================================================
 
 The Tiny84Tuner class is included for tuning an ATtiny84 processor using pin 0 (PB0).  Connect anything to pin 0 that accurately outputs a lowercase 'x' at 9600 baud.  Ensure the ATtiny84 processor is using the internal oscillator.  Add something like this to a Sketch...
 
@@ -88,7 +88,7 @@ Save_to_EEPROM blinks an LED as each 'x' is processed.  Then the optimal value i
 
 
 Availability
-========================================
+===========================================================================
 
 A ZIP download is available here...
 http://arduino-tiny.googlecode.com/files/TinyTuner-0001.zip
@@ -98,6 +98,6 @@ http://code.google.com/p/arduino-tiny/source/browse/#svn/trunk/libraries/TinyTun
 
 
 License
-========================================
+===========================================================================
 
 This library is released under the GNU Lesser General Public License.
