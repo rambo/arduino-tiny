@@ -20,6 +20,9 @@
   Boston, MA  02111-1307  USA
 
   $Id: wiring.h 1073 2010-08-17 21:50:41Z dmellis $
+
+  Modified 28-08-2009 for attiny84 R.Wiersma
+  Modified 14-108-2009 for attiny45 Saposoft
 */
 
 #ifndef Wiring_h

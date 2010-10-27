@@ -23,6 +23,7 @@
   Modified 24 November 2006 by David A. Mellis
 
   Modified 28-08-2009 for attiny84 R.Wiersma
+  Modified 09-10-2009 for attiny45 A.Saporetti
 */
 
 #include <inttypes.h>
@@ -97,7 +98,14 @@ void detachInterrupt(uint8_t interruptNum) {
   }
 }
 
-SIGNAL(EXT_INT0_vect) {
+#if defined( EXT_INT0_vect )
+SIGNAL(EXT_INT0_vect) 
+#elif defined( INT0_vect )
+SIGNAL(INT0_vect)
+#else
+#error Add a declaration for the processor's INT0 vector. 
+#endif
+{
   if(intFunc[EXTERNAL_INT_0])
     intFunc[EXTERNAL_INT_0]();
 }

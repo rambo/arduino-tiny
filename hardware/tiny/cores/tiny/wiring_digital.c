@@ -20,6 +20,9 @@
   Boston, MA  02111-1307  USA
 
   $Id: wiring.c 248 2007-02-03 15:36:30Z mellis $
+
+  Modified 28-08-2009 for attiny84 R.Wiersma
+  Modified 14-10-2009 for attiny45 Saposoft
 */
 
 #include "wiring_private.h"
@@ -59,6 +62,7 @@ void pinMode(uint8_t pin, uint8_t mode)
 static inline void turnOffPWM(uint8_t timer) __attribute__ ((always_inline));
 static inline void turnOffPWM(uint8_t timer)
 {
+/* fix
   #if defined( TIMER1A )
 	  if (timer == TIMER1A) cbi(TCCR1A, COM1A1);
   #endif
@@ -74,6 +78,7 @@ static inline void turnOffPWM(uint8_t timer)
   #if defined( TIMER0B )
   	if (timer == TIMER0B) cbi(TCCR0A, COM0B1);
   #endif
+*/
 }
 
 void digitalWrite(uint8_t pin, uint8_t val)

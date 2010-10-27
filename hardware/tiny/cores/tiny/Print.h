@@ -31,6 +31,23 @@
 #define BIN 2
 #define BYTE 0
 
+/*
+  http://arduiniana.org/libraries/flash/
+  Printable support thanks to Mikal Hart...
+*/
+
+#define ARDUINO_CORE_PRINTABLE_SUPPORT
+
+class Print;
+
+class _Printable
+{
+public:
+  virtual void print(Print &stream) const = 0;
+};
+
+/* ...Printable */
+    
 class Print
 {
   private:
@@ -61,6 +78,13 @@ class Print
     void println(unsigned long, int = DEC);
     void println(double, int = 2);
     void println(void);
+  public:
+    /* Printable...*/
+    void println(const _Printable &obj)
+    { obj.print(*this); println(); }
+    void print(const _Printable &obj)
+    { obj.print(*this); };
+    /* ...Printable */
 };
 
 #endif

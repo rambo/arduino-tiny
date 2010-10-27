@@ -22,7 +22,7 @@
   $Id: wiring.c 248 2007-02-03 15:36:30Z mellis $
 
   Modified  28-08-2009 for attiny84 R.Wiersma
-
+  Modified  14-10-2009 for attiny45 Saposoft
   Corrected 17-05-2010 for ATtiny84 B.Cook
 */
 
@@ -41,6 +41,7 @@ void analogReference(uint8_t mode)
 
 int analogRead(uint8_t pin)
 {
+/* fix
   static const REFSMASK = (1<<REFS1) | (1<<REFS0);
   static const REFSSHIFT = REFS0;
   static const MUXMASK = (0<<MUX5) | (0<<MUX4) | (0<<MUX3) | (1<<MUX2) | (1<<MUX1) | (1<<MUX0);
@@ -69,6 +70,8 @@ int analogRead(uint8_t pin)
 
   // combine the two bytes
   return (high << 8) | low;
+*/
+  return( 0 );
 }
 
 // Right now, PWM output only works on the pins with
@@ -77,6 +80,7 @@ int analogRead(uint8_t pin)
 // to digital output.
 void analogWrite(uint8_t pin, int val)
 {
+/* fix
   // We need to make sure the PWM output is enabled for those pins
   // that support it, as we turn it off when digitally reading or
   // writing with them.  Also, make sure the pin is in output mode
@@ -136,4 +140,5 @@ void analogWrite(uint8_t pin, int val)
       break;
     }
   }
+*/
 }

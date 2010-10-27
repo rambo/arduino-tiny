@@ -22,6 +22,7 @@
   $Id: pins_arduino.c 565 2009-03-25 10:50:00Z dmellis $
 
   Modified 28-08-2009 for attiny84 R.Wiersma
+  Modified 09-10-2009 for attiny45 A.Saporetti
 
   Corrected 17-05-2010 for ATtiny84 B.Cook ...
 
@@ -35,39 +36,119 @@
 #include "wiring_private.h"
 #include "pins_arduino.h"
 
+
+#if defined(__AVR_ATtiny84__)
+
 // ATMEL ATTINY84 / ARDUINO
 //
-//                          +-\/-+
-//                    VCC  1|    |14  GND
-//      (D  0)        PB0  2|    |13  AREF (D 10)
-//      (D  1)        PB1  3|    |12  PA1  (D  9) 
-//      	            PB3  4|    |11  PA2  (D  8) 
-//  PWM (D  2) (INT0) PB2  5|    |10  PA3  (D  7) 
-//  PWM (D  3)        PA7  6|    |9   PA4  (D  6) 
-//  PWM (D  4)        PA6  7|    |8   PA5  (D  5) PWM
-//                          +----+
+//                           +-\/-+
+//                     VCC  1|    |14  GND
+//             (D  0)  PB0  2|    |13  AREF (D 10)
+//             (D  1)  PB1  3|    |12  PA1  (D  9) 
+//                     PB3  4|    |11  PA2  (D  8) 
+//  PWM  INT0  (D  2)  PB2  5|    |10  PA3  (D  7) 
+//  PWM        (D  3)  PA7  6|    |9   PA4  (D  6) 
+//  PWM        (D  4)  PA6  7|    |8   PA5  (D  5)        PWM
+//                           +----+
 
-#define PA 1  /*2*/
-#define PB 2  /*3*/
+#define PA 1
+#define PB 2
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-const uint16_t PROGMEM port_to_mode_PGM[] = {
+const uint8_t PROGMEM port_to_mode_PGM[] = {
+  NOT_A_PORT,
+  &DDRA,
+  &DDRB,
+};
+
+const uint8_t PROGMEM port_to_output_PGM[] = {
+  NOT_A_PORT,
+  &PORTA,
+  &PORTB,
+};
+
+const uint8_t PROGMEM port_to_input_PGM[] = {
+  NOT_A_PORT,
+  &PINA,
+  &PINB,
+};
+
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+  PB, /* 0 */
+  PB,
+  PB,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA, /* 8 */
+  PA,
+  PA,
+};
+
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+  _BV(0), /* 0, port B */
+  _BV(1),
+  _BV(2),
+  _BV(7), /* 3 port B */
+  _BV(6),
+  _BV(5),
+  _BV(4),
+  _BV(3),
+  _BV(2), 
+  _BV(1),
+  _BV(0),
+};
+
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER0A, /* OC0A */
+  TIMER0B, /* OC0B */
+  TIMER1A, /* OC1A */
+  TIMER1B, /* OC1B */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER, 
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+};
+
+#endif
+
+
+#if defined(__AVR_ATtiny85__)
+
+// ATMEL ATTINY45 / ARDUINO
+//
+//                           +-\/-+
+//  Ain0       (D  5)  PB5  1|    |8   VCC
+//  Ain3       (D  3)  PB3  2|    |7   PB2  (D  2)  INT0  Ain1
+//  Ain2       (D  4)  PB4  3|    |6   PB1  (D  1)        pwm1
+//                     GND  4|    |5   PB0  (D  0)        pwm0
+//                           +----+
+
+#define PB 1
+
+// these arrays map port names (e.g. port B) to the
+// appropriate addresses for various functions (e.g. reading
+// and writing) tiny45 only port B 
+const uint8_t PROGMEM port_to_mode_PGM[] = {
 	NOT_A_PORT,
-	&DDRA,
 	&DDRB,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = {
+const uint8_t PROGMEM port_to_output_PGM[] = {
 	NOT_A_PORT,
-	&PORTA,
 	&PORTB,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = {
-	NOT_A_PORT,
-	&PINA,
+const uint8_t PROGMEM port_to_input_PGM[] = {
+	NOT_A_PIN,
 	&PINB,
 };
 
@@ -75,41 +156,29 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 	PB, /* 0 */
 	PB,
 	PB,
-	PA,
-	PA,
-	PA,
-	PA,
-	PA,
-	PA, /* 8 */
-	PA,
-  PA,
+	PB,
+	PB, 
+	PB, /* 5 */
+
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 	_BV(0), /* 0, port B */
 	_BV(1),
 	_BV(2),
-	_BV(7), /* 3 port B */
-	_BV(6),
-	_BV(5),
+	_BV(3), /* 3 port B */
 	_BV(4),
-	_BV(3),
-	_BV(2), 
-	_BV(1),
-	_BV(0),
+	_BV(5),
+
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
 	TIMER0A, /* OC0A */
-	TIMER0B, /* OC0B */
-	TIMER1A, /* OC1A */
-	TIMER1B, /* OC1B */
+	TIMER1A, /* OC1A? */
 	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, 
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 };
+
+#endif
