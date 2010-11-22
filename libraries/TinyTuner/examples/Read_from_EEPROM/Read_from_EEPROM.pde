@@ -21,25 +21,62 @@
   http://forums.adafruit.com/viewtopic.php?t=5078
 
 ==============================================================================*/
-#include <EEPROM.h>
-#include <NewSoftSerial.h>
 
-NewSoftSerial nss( 2, 1 );
+/*==============================================================================
+
+  The purpose of this example is to print the optimal calibration register 
+  value from a previous run of the Save_to_EEPROM example.
+
+================================================================================  
+
+  ATtiny84 Instructions...
+  
+  - Select the correct board / serial port
+  
+  - Upload this Sketch to the processor
+  
+  - Connect PB0 / Pin 0 to receive on the serial converter
+  
+  - Start your favorite terminal program, open the correct serial port, change
+    the baud rate to 9600
+    
+  - Reset the processor
+  
+  - The value from EEPROM address zero should be displayed
+
+================================================================================  
+    
+  ATtiny85 / ATtiny45 Instructions...
+  
+  - Select the correct board / serial port
+  
+  - Upload this Sketch to the processor
+  
+  - Connect PB3 / Pin 3 to receive on the serial converter
+  
+  - Start your favorite terminal program, open the correct serial port, change
+    the baud rate to 9600
+    
+  - Reset the processor
+  
+  - The value from EEPROM address zero should be displayed
+  
+==============================================================================*/
+
+#include <EEPROM.h>
 
 void setup( void )
 {
-  nss.begin( 9600 );
+  Serial.begin( 9600 );
 
-  nss.println( "\r\n\r\n\r\n" );
-  nss.println( "Poor Man's Tiny Tuner\n" );
-  nss.println( "Place this line of code at the top of setup...\r\n" );
-  nss.print( "  OSCCAL = 0x" );
-  nss.print( EEPROM.read( 0 ), HEX );
-  nss.println( ";\r\n" );
+  Serial.println( "\r\n\r\n\r\n" );
+  Serial.println( "Poor Man's Tiny Tuner\n" );
+  Serial.println( "Place this line of code at the top of setup...\r\n" );
+  Serial.print( "  OSCCAL = 0x" );
+  Serial.print( EEPROM.read( 0 ), HEX );
+  Serial.println( ";\r\n" );
 }
-
 
 void loop( void )
 {
 }
-

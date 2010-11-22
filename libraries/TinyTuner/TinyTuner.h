@@ -34,7 +34,7 @@ template
     uint8_t CAL_REG,
     uint8_t CAL_BIT
   >
-class TinyTuner
+class TinyTunerTemplate
 {
 public:
 
@@ -63,8 +63,18 @@ public:
     int16_t     Error;
     uint8_t     ConfirmCount;
     uint16_t    ConfirmNineBitTime;
+    int16_t     ConfirmClocks;  // rmv: Strictly for debugging.
   }
   info_t;
+
+  typedef struct
+  {
+    uint8_t       calibration;
+    state_t       state;
+    position_t    position;
+    info_t        info[pMax];
+  }
+  debug_t;
 
 private:
 
@@ -72,11 +82,13 @@ private:
 
   position_t _position;
 
+  uint8_t _threshold;
+
   info_t _info[pMax];
 
 public:
 
-  TinyTuner()
+  TinyTunerTemplate()
   {
     _state = sFirstPass;
   }
@@ -99,6 +111,7 @@ public:
       _info[pRight].OsccalValue = 0x80;
       _position = pThis;
       _state = sBigSteps;
+      _threshold = 3;
     }
 
     if ( _state == sConfirm )
@@ -121,22 +134,27 @@ public:
         ++_info[_position].ConfirmCount;
         _info[_position].ConfirmNineBitTime += nbt;
         
-        if ( _info[_position].ConfirmCount >= 3 )
+        if ( _info[_position].ConfirmCount >= _threshold )
         {
           for ( _position=pLeft; _position < pMax; _position=(position_t)(_position+1) )
           {
-            if ( _info[_position].ConfirmCount < 3 )
+            if ( _info[_position].ConfirmCount < _threshold )
             {
               break;
             }
           }
           if ( _position == pMax )
           {
-            FindBest();
-            _state = sFinished;
-          }
-          else
-          {
+            if ( FindBest() )
+            {
+              _state = sFinished;
+            }
+            else
+            {
+              _threshold += 2;
+
+              // fix? _threshold is unbounded.  At some point it may be prudent to just pick one of the two choices.
+            }
           }
         }
       }
@@ -164,7 +182,7 @@ public:
 
           if ( _info[pThis].OsccalValue <= _info[pLeft].OsccalValue )
           {
-            // fix? Do something special about the greater-than case?  If everything else is correct, it should never occur.
+            // fix? Do something special about the greater-than case?  If everything else is correct, it will never occur.
             if ( _info[pLeft].OsccalValue + 1 == _info[pRight].OsccalValue )
             {
               TransitionToConfirm();
@@ -189,7 +207,7 @@ public:
 
           if ( _info[pThis].OsccalValue >= _info[pRight].OsccalValue )
           {
-            // fix? Do something special about the less-than case?  If everything else is correct, it should never occur.
+            // fix? Do something special about the less-than case?  If everything else is correct, it will never occur.
             if ( _info[pLeft].OsccalValue + 1 == _info[pRight].OsccalValue )
             {
               TransitionToConfirm();
@@ -213,41 +231,55 @@ public:
     return( true );
   }
 
-public:
-
-  state_t getState( void )
-  {
-    return( _state );
-  }
-
 protected:
 
-  void FindBest( void )
+  bool FindBest( void )
   {
-    uint16_t nbt;
+    // rmv uint16_t nbt;
     int16_t clocks;
     int16_t error;
     position_t position;
     int16_t BestError;
+    bool NeedToTryHarder;
     
     BestError = 0x7FFF;
+    NeedToTryHarder = false;
     
     for ( position=pLeft; position < pMax; position=(position_t)(position+1) )
     {
-      nbt = _info[position].ConfirmNineBitTime / _info[position].ConfirmCount;
-      clocks = (nbt-1)*5 + 5;
+      //rmv nbt = ( ( 2 * _info[position].ConfirmNineBitTime / _info[position].ConfirmCount ) + 1 ) / 2;
+      //rmv clocks = (nbt-1)*5 + 5;
+      clocks = (((((((uint32_t)(_info[position].ConfirmNineBitTime) - 1) * 5ul ) + 5ul) * 2ul) / _info[position].ConfirmCount) + 1ul) / 2ul;
       error = clocks - 7500;
 
       if ( error < 0 )
       {
         error = -error;
       }
+
+      // rmv: Strictly for debugging...
+      // rmv _info[position].NineBitTime = nbt;
+      _info[position].ConfirmClocks = clocks;
+      _info[position].Error = error;
+      // ...rmv
+
       if ( error < BestError )
       {
         BestError = error;
         _position = position;
+        NeedToTryHarder = false;
+      }
+      else if ( error == BestError )
+      {
+        _position = position;
+        NeedToTryHarder = true;
       }
     }
+
+    if ( NeedToTryHarder )
+      return( false );
+    else
+      return( true );
   }
 
   void TransitionToConfirm( void )
@@ -406,10 +438,48 @@ public:
     return( Temp );
   }
 
+public:
+
+  void getDebug( debug_t& debug )
+  {
+    debug.calibration  = OSCCAL;
+    debug.state        = _state;
+    debug.position     = _position;
+    debug.info[pLeft]  = _info[pLeft];
+    debug.info[pThis]  = _info[pThis];
+    debug.info[pRight] = _info[pRight];
+  }
+
+  void fullInit( void )
+  {
+    _position = pMax;
+    _threshold = 0;
+
+    for ( position_t p=pLeft; p < pMax; p=(position_t)(p+1) )
+    {
+      _info[p].OsccalValue = 0;
+      _info[p].NineBitTime = 0;
+      _info[p].Error = 0;
+      _info[p].ConfirmCount = 0;
+      _info[p].ConfirmNineBitTime = 0;
+      _info[p].ConfirmClocks = 0;
+    }
+  }
+
 };
 
 
-typedef TinyTuner<0x16,0x00> Tiny84Tuner;
-
+#if defined(__AVR_ATtiny84__)
+  typedef TinyTunerTemplate<0x16,1> Tiny84Tuner;
+  typedef Tiny84Tuner TinyTuner;
+#elif defined(__AVR_ATtiny85__)
+  typedef TinyTunerTemplate<0x16,4> Tiny85Tuner;
+  typedef Tiny85Tuner TinyTuner;
+#elif defined(__AVR_ATtiny45__)
+  typedef TinyTunerTemplate<0x16,4> Tiny45Tuner;
+  typedef Tiny45Tuner TinyTuner;
+#else
+  #error Add a definition for your processor.
+#endif
 
 #endif

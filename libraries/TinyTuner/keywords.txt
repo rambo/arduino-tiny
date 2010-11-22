@@ -8,6 +8,7 @@
 
 TinyTuner	KEYWORD1
 Tiny84Tuner	KEYWORD1
+Tiny85Tuner	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
