@@ -33,11 +33,12 @@
 */
 
 #include <avr/io.h>
-#include "wiring_private.h"
+#include "core_build_options.h"
 #include "pins_arduino.h"
+#include "wiring_private.h"
 
 
-#if defined(__AVR_ATtiny84__)
+#if defined(__AVR_ATtinyX4__)
 
 // ATMEL ATTINY84 / ARDUINO
 //
@@ -121,7 +122,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 #endif
 
 
-#if defined(__AVR_ATtiny85__)
+#if defined( __AVR_ATtinyX5__ )
 
 // ATMEL ATTINY45 / ARDUINO
 //

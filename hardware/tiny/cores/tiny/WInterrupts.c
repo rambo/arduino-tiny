@@ -24,6 +24,7 @@
 
   Modified 28-08-2009 for attiny84 R.Wiersma
   Modified 09-10-2009 for attiny45 A.Saporetti
+  Modified 20-11-2010 - B.Cook - Correct a minor bug in attachInterrupt
 */
 
 #include <inttypes.h>
@@ -48,7 +49,8 @@ volatile static voidFuncPtr intFunc[EXTERNAL_NUM_INTERRUPTS];
 void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode) {
   if(interruptNum < EXTERNAL_NUM_INTERRUPTS) {
 
-    /* bwc: If attachInterrupt is called in succession for the same 
+    /* 
+      If attachInterrupt is called in succession for the same 
       interruptNum but a different userFunc then the following line 
       is not safe.  Changing intFunc is not atomic.
     intFunc[interruptNum] = userFunc;

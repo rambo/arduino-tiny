@@ -23,37 +23,63 @@
 
   Modified 28-08-2009 for attiny84 R.Wiersma
   Modified 14-10-2009 for attiny45 Saposoft
+  Modified 20-11-2010 - B.Cook - Rewritten to use the various Veneers.
 */
 
+#include "core_build_options.h"
+#include "core_adc.h"
+#include "core_timers.h"
 #include "wiring_private.h"
+#include "ToneTimer.h"
 
-// the prescaler is set so that timer0 ticks every 64 clock cycles, and the
+#define millistimer_(t)                           TIMER_PASTE_A( timer, TIMER_TO_USE_FOR_MILLIS, t )
+#define MillisTimer_(f)                           TIMER_PASTE_A( Timer, TIMER_TO_USE_FOR_MILLIS, f )
+#define MILLISTIMER_(c)                           TIMER_PASTE_A( TIMER, TIMER_TO_USE_FOR_MILLIS, c )
+
+#define MillisTimer_SetToPowerup                  MillisTimer_(SetToPowerup)
+#define MillisTimer_SetWaveformGenerationMode     MillisTimer_(SetWaveformGenerationMode)
+#define MillisTimer_GetCount                      MillisTimer_(GetCount)
+#define MillisTimer_IsOverflowSet                 MillisTimer_(IsOverflowSet)
+#define MillisTimer_ClockSelect                   MillisTimer_(ClockSelect)
+#define MillisTimer_EnableOverflowInterrupt       MillisTimer_(EnableOverflowInterrupt)
+#define MILLISTIMER_OVF_vect                      MILLISTIMER_(OVF_vect)
+
+
+#if F_CPU >= 3000000L
+  #define MillisTimer_Prescale_Index  MillisTimer_(Prescale_Value_64)
+  #define MillisTimer_Prescale_Value  (64)
+  #define ToneTimer_Prescale_Index    ToneTimer_(Prescale_Value_64)
+  #define ToneTimer_Prescale_Value    (64)
+#else
+  #define MillisTimer_Prescale_Index  MillisTimer_(Prescale_Value_8)
+  #define MillisTimer_Prescale_Value  (8)
+  #define ToneTimer_Prescale_Index    ToneTimer_(Prescale_Value_8)
+  #define ToneTimer_Prescale_Value    (8)
+#endif
+
+// the prescaler is set so that the millis timer ticks every MillisTimer_Prescale_Value (64) clock cycles, and the
 // the overflow handler is called every 256 ticks.
-#define MICROSECONDS_PER_TIMER0_OVERFLOW (clockCyclesToMicroseconds(64 * 256))
+#define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
 
-// the whole number of milliseconds per timer0 overflow
-#define MILLIS_INC (MICROSECONDS_PER_TIMER0_OVERFLOW / 1000)
+// the whole number of milliseconds per millis timer overflow
+#define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000)
 
-// the fractional number of milliseconds per timer0 overflow. we shift right
+// the fractional number of milliseconds per millis timer overflow. we shift right
 // by three to fit these numbers into a byte. (for the clock speeds we care
 // about - 8 and 16 MHz - this doesn't lose precision.)
-#define FRACT_INC ((MICROSECONDS_PER_TIMER0_OVERFLOW % 1000) >> 3)
+#define FRACT_INC ((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000) >> 3)
 #define FRACT_MAX (1000 >> 3)
 
-volatile unsigned long timer0_overflow_count = 0;
-volatile unsigned long timer0_millis = 0;
-static unsigned char timer0_fract = 0;
+volatile unsigned long millis_timer_overflow_count = 0;
+volatile unsigned long millis_timer_millis = 0;
+static unsigned char millis_timer_fract = 0;
 
-#if defined( TIM0_OVF_vect )
-SIGNAL(TIM0_OVF_vect)
-#else
-SIGNAL(TIMER0_OVF_vect)
-#endif
+ISR(MILLISTIMER_OVF_vect)
 {
   // copy these to local variables so they can be stored in registers
   // (volatile variables must be read from memory on every access)
-  unsigned long m = timer0_millis;
-  unsigned char f = timer0_fract;
+  unsigned long m = millis_timer_millis;
+  unsigned char f = millis_timer_fract;
 
   m += MILLIS_INC;
   f += FRACT_INC;
@@ -62,9 +88,9 @@ SIGNAL(TIMER0_OVF_vect)
     m += 1;
   }
 
-  timer0_fract = f;
-  timer0_millis = m;
-  timer0_overflow_count++;
+  millis_timer_fract = f;
+  millis_timer_millis = m;
+  millis_timer_overflow_count++;
 }
 
 unsigned long millis()
@@ -72,10 +98,10 @@ unsigned long millis()
   unsigned long m;
   uint8_t oldSREG = SREG;
 
-  // disable interrupts while we read timer0_millis or we might get an
-  // inconsistent value (e.g. in the middle of a write to timer0_millis)
+  // disable interrupts while we read millis_timer_millis or we might get an
+  // inconsistent value (e.g. in the middle of a write to millis_timer_millis)
   cli();
-  m = timer0_millis;
+  m = millis_timer_millis;
   SREG = oldSREG;
 
   return m;
@@ -86,20 +112,15 @@ unsigned long micros() {
   uint8_t oldSREG = SREG, t;
   
   cli();
-  m = timer0_overflow_count;
-  t = TCNT0;
+  m = millis_timer_overflow_count;
+  t = MillisTimer_GetCount();
   
-#ifdef TIFR0
-  if ((TIFR0 & _BV(TOV0)) && (t < 255))
+  if (MillisTimer_IsOverflowSet() && (t < 255))
     m++;
-#else
-  if ((TIFR & _BV(TOV0)) && (t < 255))
-    m++;
-#endif
 
   SREG = oldSREG;
   
-  return ((m << 8) + t) * (64 / clockCyclesPerMicrosecond());
+  return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
 }
 
 void delay(unsigned long ms)
@@ -164,151 +185,57 @@ void delayMicroseconds(unsigned int us)
   );
 }
 
-void init()
+static void initToneTimerInternal(void)
 {
-  // this needs to be called before setup() or some functions won't
-  // work there
+  // Stop the clock while we make changes
+  ToneTimer_ClockSelect( ToneTimer_(Stopped) );
+
+  // Set the timer to phase-correct PWM
+  #if defined( TONETIMER_SUPPORTS_PHASE_CORRECT_PWM ) && TONETIMER_SUPPORTS_PHASE_CORRECT_PWM
+    ToneTimer_SetWaveformGenerationMode( ToneTimer_(Phase_Correct_PWM_FF) );
+  #else
+    ToneTimer_SetWaveformGenerationMode( ToneTimer_(Fast_PWM_FF) );
+  #endif
+
+  // Timer is processor clock divided by ToneTimer_Prescale_Index (64)
+  ToneTimer_ClockSelect( ToneTimer_Prescale_Index );
+}
+
+void initToneTimer(void)
+{
+  // Ensure the timer is in the same state as power-up
+  ToneTimer_SetToPowerup();
+
+  // Prepare the timer for PWM
+  initToneTimerInternal();
+}
+
+void init(void)
+{
+  // this needs to be called before setup() or some functions won't work there
   sei();
 
-/* dumpt everything, and only added the 2 timers the attiny has */
-  // on the ATtiny84, timer 0 is also used for fast hardware pwm
-  // (using phase-correct PWM would mean that timer 0 overflowed half as often
-  // resulting in different millis() behavior on the ATmega8 and ATtiny84)
-  sbi(TCCR0A, WGM01);
-  sbi(TCCR0A, WGM00);
-  
-  // set timer 0 prescale factor to 64
-  sbi(TCCR0B, CS01);
-  sbi(TCCR0B, CS00);
-  
-  // enable timer 0 overflow interrupt
-
-  #if defined( TIMSK0 )
-    sbi(TIMSK0, TOIE0);
+  // In case the bootloader left our millis timer in a bad way
+  #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
+    MillisTimer_SetToPowerup();
   #endif
 
-  #if defined( TIMSK ) 
-	  sbi(TIMSK, TOIE0);
+  // Use the Millis Timer for fast PWM
+  MillisTimer_SetWaveformGenerationMode( MillisTimer_(Fast_PWM_FF) );
+
+  // Millis timer is always processor clock divided by MillisTimer_Prescale_Value (64)
+  MillisTimer_ClockSelect( MillisTimer_Prescale_Index );
+
+  // Enable the overlow interrupt (this is the basic system tic-toc for millis)
+  MillisTimer_EnableOverflowInterrupt();
+
+  // Initialize the timer used for Tone
+  initToneTimerInternal();
+
+  // Initialize the ADC
+  #if defined( INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER ) && INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER
+    ADC_PrescalerSelect( ADC_ARDUINO_PRESCALER );
+    ADC_Enable();
   #endif
-
-  // timer 1 is used for phase-correct hardware pwm
-  // this is better for motors as it ensures an even waveform
-  // note, however, that fast pwm mode can achieve a frequency of up
-  // 8 MHz (with a 16 MHz clock) at 50% duty cycle
-
-  #if defined( TCCR1B ) && defined( TCCR1A )
-    // set timer 1 prescale factor to 64
-    sbi(TCCR1B, CS11);
-    sbi(TCCR1B, CS10);
-    // put timer 1 in 8-bit phase correct pwm mode
-    sbi(TCCR1A, WGM10);
-  #endif
-
-  #if defined( TCCR1 )
-    // set timer 1 prescale factor to 64 and enable PWM
-	  sbi(TCCR1, CS11);
-	  sbi(TCCR1, CS10);
-	  sbi(TCCR1, PWM1A);
-  	// put timer 1 in 8-bit phase correct pwm mode
-	  // sbi(TCCR1, WGM10); non c'è nell attiny 45
-  #endif
-
-  // set a2d prescale factor to 128
-  // 16 MHz / 128 = 125 KHz, inside the desired 50-200 KHz range.
-  // XXX: this will not work properly for other clock speeds, and
-  // this code should use F_CPU to determine the prescale factor.
-/* added F_CPU prescaler */
-#if F_CPU >= 16000000L  //128
-  sbi(ADCSRA, ADPS2);
-  sbi(ADCSRA, ADPS1);
-  sbi(ADCSRA, ADPS0);
-#elif F_CPU >= 8000000L //64
-  sbi(ADCSRA, ADPS2);
-  sbi(ADCSRA, ADPS1);
-#else       // 1000000L //8
-  sbi(ADCSRA, ADPS1);
-  sbi(ADCSRA, ADPS0);
-#endif
-
-  // enable a2d conversions
-  sbi(ADCSRA, ADEN);
-
-/* review, compare, then rmv
-  // on the ATmega168, timer 0 is also used for fast hardware pwm
-  // (using phase-correct PWM would mean that timer 0 overflowed half as often
-  // resulting in different millis() behavior on the ATmega8 and ATmega168)
-#if !defined(__AVR_ATmega8__)
-  sbi(TCCR0A, WGM01);
-  sbi(TCCR0A, WGM00);
-#endif  
-  // set timer 0 prescale factor to 64
-#if defined(__AVR_ATmega8__)
-  sbi(TCCR0, CS01);
-  sbi(TCCR0, CS00);
-#else
-  sbi(TCCR0B, CS01);
-  sbi(TCCR0B, CS00);
-#endif
-  // enable timer 0 overflow interrupt
-#if defined(__AVR_ATmega8__)
-  sbi(TIMSK, TOIE0);
-#else
-  sbi(TIMSK0, TOIE0);
-#endif
-
-  // timers 1 and 2 are used for phase-correct hardware pwm
-  // this is better for motors as it ensures an even waveform
-  // note, however, that fast pwm mode can achieve a frequency of up
-  // 8 MHz (with a 16 MHz clock) at 50% duty cycle
-
-  // set timer 1 prescale factor to 64
-  sbi(TCCR1B, CS11);
-  sbi(TCCR1B, CS10);
-  // put timer 1 in 8-bit phase correct pwm mode
-  sbi(TCCR1A, WGM10);
-
-  // set timer 2 prescale factor to 64
-#if defined(__AVR_ATmega8__)
-  sbi(TCCR2, CS22);
-#else
-  sbi(TCCR2B, CS22);
-#endif
-  // configure timer 2 for phase correct pwm (8-bit)
-#if defined(__AVR_ATmega8__)
-  sbi(TCCR2, WGM20);
-#else
-  sbi(TCCR2A, WGM20);
-#endif
-
-#if defined(__AVR_ATmega1280__)
-  // set timer 3, 4, 5 prescale factor to 64
-  sbi(TCCR3B, CS31);  sbi(TCCR3B, CS30);
-  sbi(TCCR4B, CS41);  sbi(TCCR4B, CS40);
-  sbi(TCCR5B, CS51);  sbi(TCCR5B, CS50);
-  // put timer 3, 4, 5 in 8-bit phase correct pwm mode
-  sbi(TCCR3A, WGM30);
-  sbi(TCCR4A, WGM40);
-  sbi(TCCR5A, WGM50);
-#endif
-
-  // set a2d prescale factor to 128
-  // 16 MHz / 128 = 125 KHz, inside the desired 50-200 KHz range.
-  // XXX: this will not work properly for other clock speeds, and
-  // this code should use F_CPU to determine the prescale factor.
-  sbi(ADCSRA, ADPS2);
-  sbi(ADCSRA, ADPS1);
-  sbi(ADCSRA, ADPS0);
-
-  // enable a2d conversions
-  sbi(ADCSRA, ADEN);
-
-  // the bootloader connects pins 0 and 1 to the USART; disconnect them
-  // here so they can be used as normal digital i/o; they will be
-  // reconnected in Serial.begin()
-#if defined(__AVR_ATmega8__)
-  UCSRB = 0;
-#else
-  UCSR0B = 0;
-#endif
-*/
 }
+

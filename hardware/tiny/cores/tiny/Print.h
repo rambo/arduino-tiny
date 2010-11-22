@@ -15,6 +15,11 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Modified 20-11-2010 by B.Cook ...
+
+    http://arduiniana.org/libraries/flash/
+    Printable support thanks to Mikal Hart
 */
 
 #ifndef Print_h
@@ -31,14 +36,11 @@
 #define BIN 2
 #define BYTE 0
 
-/*
-  http://arduiniana.org/libraries/flash/
-  Printable support thanks to Mikal Hart...
-*/
-
 #define ARDUINO_CORE_PRINTABLE_SUPPORT
 
 class Print;
+
+/* Printable...*/
 
 class _Printable
 {

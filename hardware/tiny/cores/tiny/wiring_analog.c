@@ -28,6 +28,10 @@
 
 #include "wiring_private.h"
 #include "pins_arduino.h"
+#include "core_adc.h"
+#include "core_pins.h"
+#include "core_timers.h"
+#include "PwmTimer.h"
 
 uint8_t analog_reference = DEFAULT;
 
@@ -36,42 +40,24 @@ void analogReference(uint8_t mode)
   // can't actually set the register here because the default setting
   // will connect AVCC and the AREF pin, which would cause a short if
   // there's something connected to AREF.
+  // fix? Validate the mode?
   analog_reference = mode;
 }
 
 int analogRead(uint8_t pin)
 {
-/* fix
-  static const REFSMASK = (1<<REFS1) | (1<<REFS0);
-  static const REFSSHIFT = REFS0;
-  static const MUXMASK = (0<<MUX5) | (0<<MUX4) | (0<<MUX3) | (1<<MUX2) | (1<<MUX1) | (1<<MUX0);
-  static const MUXSHIFT = MUX0;
-  uint8_t low, high;
+  if ( pin >= CORE_ANALOG_FIRST ) pin -= CORE_ANALOG_FIRST; // allow for channel or pin numbers
 
-	if ( pin >= 11 ) pin -= 11; // allow for channel or pin numbers
+  // fix? Validate pin?
 
-  // set the analog reference (high two bits of ADMUX) and select the
-  // channel (low 4 bits).  this also sets ADLAR (left-adjust result)
-  // to 0 (the default).
-	ADMUX = ((analog_reference << REFSSHIFT) & REFSMASK) | ((pin << MUXSHIFT) & MUXMASK);
-  
-  // start the conversion
-  sbi(ADCSRA, ADSC);
+  ADC_SetVoltageReference( analog_reference );
+  ADC_SetInputChannel( pin );
 
-  // ADSC is cleared when the conversion finishes
-  while (bit_is_set(ADCSRA, ADSC));
+  ADC_StartConversion();
 
-  // we have to read ADCL first; doing so locks both ADCL
-  // and ADCH until ADCH is read.  reading ADCL second would
-  // cause the results of each conversion to be discarded,
-  // as ADCL and ADCH would be locked when it completed.
-  low = ADCL;
-  high = ADCH;
+  while( ADC_ConversionInProgress() );
 
-  // combine the two bytes
-  return (high << 8) | low;
-*/
-  return( 0 );
+  return( ADC_GetDataRegister() );
 }
 
 // Right now, PWM output only works on the pins with
@@ -80,13 +66,13 @@ int analogRead(uint8_t pin)
 // to digital output.
 void analogWrite(uint8_t pin, int val)
 {
-/* fix
   // We need to make sure the PWM output is enabled for those pins
   // that support it, as we turn it off when digitally reading or
   // writing with them.  Also, make sure the pin is in output mode
   // for consistenty with Wiring, which doesn't require a pinMode
   // call for the analog output pins.
   pinMode(pin, OUTPUT);
+
   if (val <= 0)
   {
     digitalWrite(pin, LOW);
@@ -97,10 +83,47 @@ void analogWrite(uint8_t pin, int val)
   }
   else
   {
-    switch(digitalPinToTimer(pin))
+    #if CORE_PWM_COUNT >= 1
+      if ( pin == CORE_PWM0_PIN )
+      {
+        Pwm0_SetCompareOutputMode( Pwm0_Clear );
+        Pwm0_SetOutputCompareMatch( val );
+      }
+      else
+    #endif
+
+    #if CORE_PWM_COUNT >= 2
+      if ( pin == CORE_PWM1_PIN )
+      {
+        Pwm1_SetCompareOutputMode( Pwm1_Clear );
+        Pwm1_SetOutputCompareMatch( val );
+      }
+      else
+    #endif
+
+    #if CORE_PWM_COUNT >= 3
+      if ( pin == CORE_PWM2_PIN )
+      {
+        Pwm2_SetCompareOutputMode( Pwm2_Clear );
+        Pwm2_SetOutputCompareMatch( val );
+      }
+      else
+    #endif
+
+    #if CORE_PWM_COUNT >= 4
+      if ( pin == CORE_PWM3_PIN )
+      {
+        Pwm3_SetCompareOutputMode( Pwm3_Clear );
+        Pwm3_SetOutputCompareMatch( val );
+      }
+      else
+    #endif
+
+    #if CORE_PWM_COUNT >= 5
+    #error Only 4 PWM pins are supported.  Add more conditions.
+    #endif
+
     {
-    case NOT_ON_TIMER:
-    default:
       if (val < 128)
       {
         digitalWrite(pin, LOW);
@@ -109,36 +132,7 @@ void analogWrite(uint8_t pin, int val)
       {
         digitalWrite(pin, HIGH);
       }
-      break;
-
-    case TIMER0A:
-      // connect pwm to pin on timer 0, channel A
-      sbi(TCCR0A, COM0A1);
-      // set pwm duty
-      OCR0A = val;      
-      break;
-
-    case TIMER0B:
-      // connect pwm to pin on timer 0, channel B
-      sbi(TCCR0A, COM0B1);
-      // set pwm duty
-      OCR0B = val;
-      break;
-
-    case TIMER1A:
-      // connect pwm to pin on timer 1, channel A
-      sbi(TCCR1A, COM1A1);
-      // set pwm duty
-      OCR1A = val;
-      break;
-
-    case TIMER1B:
-      // connect pwm to pin on timer 1, channel B
-      sbi(TCCR1A, COM1B1);
-      // set pwm duty
-      OCR1B = val;
-      break;
     }
+
   }
-*/
 }

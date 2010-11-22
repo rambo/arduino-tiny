@@ -1,9 +1,33 @@
+/*==============================================================================
+
+  TinyDebugSerial.h - Tiny write-only software serial.
+
+  Copyright 2010 Rowdy Dog Software.
+
+  This file is part of Arduino-Tiny.
+
+  Arduino-Tiny is free software: you can redistribute it and/or modify it 
+  under the terms of the GNU Lesser General Public License as published by 
+  the Free Software Foundation, either version 3 of the License, or (at your
+  option) any later version.
+
+  Arduino-Tiny is distributed in the hope that it will be useful, but 
+  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License 
+  along with Arduino-Tiny.  If not, see <http://www.gnu.org/licenses/>.
+
+==============================================================================*/
+
 #ifndef TinyDebugSerial_h
 #define TinyDebugSerial_h
 
 #include <inttypes.h>
 
 #include "binary.h"
+#include "core_build_options.h"
 #include "Stream.h"
 
 
@@ -28,8 +52,7 @@ class TinyDebugSerialWriter
 
 void TinyDebugSerialWriterInternalBug( void ) __attribute__((error("Serial (TinyDebugSerial) has an internal problem.  Contact the developer.")));
 
-static inline void TinyDebugSerialWriterBangOneByte( uint8_t value, uint8_t SER_REG, uint8_t SER_BIT, uint8_t lom, uint8_t him, uint8_t oloops, uint8_t iloops, uint8_t nops ) __attribute__((always_inline, unused));
-static inline void TinyDebugSerialWriterBangOneByte( uint8_t value, uint8_t SER_REG, uint8_t SER_BIT, uint8_t lom, uint8_t him, uint8_t oloops, uint8_t iloops, uint8_t nops )
+__attribute__((always_inline, unused)) static inline void TinyDebugSerialWriterBangOneByte( uint8_t value, uint8_t SER_REG, uint8_t SER_BIT, uint8_t lom, uint8_t him, uint8_t oloops, uint8_t iloops, uint8_t nops )
 {
   if ( __builtin_constant_p( SER_REG ) 
       && __builtin_constant_p( SER_BIT ) 
@@ -182,134 +205,6 @@ class TinyDebugSerialWriter_1_9600 : public TinyDebugSerialWriter
     virtual void write( uint8_t value )
     {
       TinyDebugSerialWriterBangOneByte( value, SER_REG, SER_BIT, B00100, B00010, 0, 28, 2 );
-/* rmv
-      uint8_t i;
-      uint8_t j;
-      uint8_t k;
-      // rmv uint8_t lob;
-      uint8_t b;  // Initialized to the low bits
-      uint8_t hib;
-      // rmv uint8_t lom;
-      // rmv uint8_t him;
-      uint8_t m;
-      
-      // rmv lob = ((value << 1) & 0x1F);
-      b   = ((value << 1) & 0x1F);
-      hib = ((value >> 4) & 0x1F) | 0x10;
-      
-      // rmv lom = B00100;
-      // rmv him = B00010;
-      
-      asm volatile
-      (
-        "ldi   %[j], 2"                           "\n\t"
-        "ldi   %[i], 5"                           "\n\t"
-//rmv   "mov   %[b], %[lob]"                      "\n\t"
-        "ldi   %[m], %[lom]"                      "\n\t"
-
-//rmv   "ldi   r31, hi8( .L%=bnopj )"             "\n\t"
-//rmv   "ldi   r30, lo8( .L%=bnopj )"             "\n\t"
-//rmv   "lsr   r31"                               "\n\t"
-//rmv   "ror   r30"                               "\n\t"
-//rmv   "adiw  r30, 1"                            "\n\t"
-
-        "cli"                                     "\n\t"
-
-        "rjmp  L%=ntop"                           "\n\t"
-
-      "L%=btop: "
-        "nop"                                     "\n\t"      // ---> 7
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-
-      "L%=ntop: "
-        "ror   %[b]"                              "\n\t"      // ---> 1
-        
-        "brcs  L%=bxh"                            "\n\t"      // 1  (not taken) 
-//rmv   "nop"                                     "\n\t"      // 1 
-        "cbi   %[serreg], %[serbit]"              "\n\t"      // 2
-        "rjmp  L%=bxz"                            "\n\t"      // 2 
-        
-      "L%=bxh: "                                              // 2  (taken) 
-        "sbi   %[serreg], %[serbit]"              "\n\t"      // 2
-//rmv   "nop"                                     "\n\t"      // 1 
-        "nop"                                     "\n\t"      // 1 
-
-                                                              // ---> 5  // rmv 6
-      "L%=bxz: "
-
-        "ror   %[m]"                              "\n\t"      // ---> 3 or 4 
-        "brcc  L%=bnoe"                           "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-      "L%=bnoe: "
-
-        "ldi   %[k], %[iloops]"                    "\n\t"      // ---> 1
-      "L%=idelay: "
-        "dec   %[k]"                              "\n\t"      // always 3 per loop
-        "brne  L%=idelay"                         "\n\t"      //
-        "nop"                                     "\n\t"      //
-
-//rmv  "ijmp"                                    "\n\t"      // ---> 2
-//rmv".L%=bnopj: "
-//rmv   "nop"                                     "\n\t"      // two extra
-//rmv   "nop"                                     "\n\t"      //
-                                                              // 3*27 + 2 = 83 cycles
-      ".if %[nops] >= 1"                          "\n\t"
-        "nop"                                     "\n\t"      //
-      ".endif"                                    "\n\t"
-      ".if %[nops] >= 2"                          "\n\t"
-        "nop"                                     "\n\t"      //
-      ".endif"                                    "\n\t"
-
-        "nop"                                     "\n\t"      // rmv
-        "nop"                                     "\n\t"      // rmv
-        "nop"                                     "\n\t"      // rmv
-        "nop"                                     "\n\t"      // rmv
-        "nop"                                     "\n\t"      // rmv
-        "nop"                                     "\n\t"      // rmv
-
-//      "nop"                                     "\n\t"      // rmv
-
-        "dec   %[i]"                              "\n\t"      // ---> 3
-        "brne  L%=btop"                           "\n\t"      //
-        "nop"                                     "\n\t"      //
-
-        "dec   %[j]"                              "\n\t"      // ---> 7
-        "breq  L%=bfin"                           "\n\t"      //
-        "ldi   %[i], 5"                           "\n\t"      //
-        "mov   %[b], %[hib]"                      "\n\t"      //
-        "ldi   %[m], %[him]"                      "\n\t"      //
-        "rjmp  L%=ntop"                           "\n\t"      //
-
-      "L%=bfin: "
-
-        "sei"                                     "\n\t"
-        : 
-          [i] "=&r" ( i ),
-          [j] "=&r" ( j ),
-          [k] "=&r" ( k ),
-//rmv     [b] "=&r" ( b ),
-          [m] "=&r" ( m )
-        : 
-          [serreg] "I" ( SER_REG ),
-          [serbit] "I" ( SER_BIT ),
-//rmv     [lob] "r" ( lob ),
-          [b] "r" ( b ),
-          [hib] "r" ( hib ),
-          [iloops] "I" ( 28 ),
-          [nops] "I" ( 2 ),
-          [lom] "I" ( B00100 ),
-          [him] "I" ( B00010 )
-        :
-          "r31",
-          "r30"
-      );
-*/
     }
 };
 
@@ -340,104 +235,6 @@ class TinyDebugSerialWriter_1_38400 : public TinyDebugSerialWriter
     virtual void write( uint8_t value )
     {
       TinyDebugSerialWriterBangOneByte( value, SER_REG, SER_BIT, B00000, B00000, 0, 2, 0 );
-/*rmv
-      uint8_t i;
-      uint8_t j;
-      uint8_t k;
-      uint8_t lob;
-      uint8_t hib;
-      uint8_t b;
-      uint8_t lom;
-      uint8_t him;
-      uint8_t m;
-      
-      lob = ((value << 1) & 0x1F);
-      hib = ((value >> 4) & 0x1F) | 0x10;
-      
-      lom = B00000;
-      him = B00000;
-      
-      asm volatile
-      (
-        "ldi   %[j], 2"                           "\n\t"
-        "ldi   %[i], 5"                           "\n\t"
-        "mov   %[b], %[lob]"                      "\n\t"
-        "mov   %[m], %[lom]"                      "\n\t"
-
-        "cli"                                     "\n\t"
-
-        "rjmp  L%=ntop"                           "\n\t"
-
-      "L%=btop: "
-        "nop"                                     "\n\t"      // ---> 7
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-
-      "L%=ntop: "
-        "ror   %[b]"                              "\n\t"      // ---> 1
-        
-        "brcs  L%=bxh"                            "\n\t"      // 1  (not taken) 
-        "nop"                                     "\n\t"      // 1 
-        "cbi   %[serreg], %[serbit]"              "\n\t"      // 2
-        "rjmp  L%=bxz"                            "\n\t"      // 2 
-        
-      "L%=bxh: "                                              // 2  (taken) 
-        "sbi   %[serreg], %[serbit]"              "\n\t"      // 2
-        "nop"                                     "\n\t"      // 1 
-        "nop"                                     "\n\t"      // 1 
-
-                                                              // ---> 6
-      "L%=bxz: "
-
-        "ror   %[m]"                              "\n\t"      // ---> 3 or 4 
-        "brcc  L%=bnoe"                           "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      //
-      "L%=bnoe: "
-
-        "ldi   %[k], 1"                           "\n\t"      // ---> 1
-      "L%=idelay: "
-        "dec   %[k]"                              "\n\t"      // always 3 per loop
-        "brne  L%=idelay"                         "\n\t"      //
-        "nop"                                     "\n\t"      //
-        "nop"                                     "\n\t"      // two extra
-        "nop"                                     "\n\t"      //
-                                                              // 3*27 + 2 = 83 cycles
-
-        "dec   %[i]"                              "\n\t"      // ---> 3
-        "brne  L%=btop"                           "\n\t"      //
-        "nop"                                     "\n\t"      //
-
-        "dec   %[j]"                              "\n\t"      // ---> 7
-        "breq  L%=bfin"                           "\n\t"      //
-        "ldi   %[i], 5"                           "\n\t"      //
-        "mov   %[b], %[hib]"                      "\n\t"      //
-        "mov   %[m], %[him]"                      "\n\t"      //
-        "rjmp  L%=ntop"                           "\n\t"      //
-
-      "L%=bfin: "
-
-        "sei"                                     "\n\t"
-        : 
-        : 
-          [i] "r" ( i ),
-          [j] "r" ( j ),
-          [k] "r" ( k ),
-          [lob] "r" ( lob ),
-          [hib] "r" ( hib ),
-          [b] "r" ( b ),
-          [lom] "r" ( lom ),
-          [him] "r" ( him ),
-          [m] "r" ( m ),
-          [serreg] "I" ( SER_REG ),
-          [serbit] "I" ( SER_BIT )
-        :
-      );
-*/
     }
 };
 
@@ -701,16 +498,24 @@ class TinyDebugSerialWriter_8_115200 : public TinyDebugSerialWriter
 };
 
 
+#if defined( __AVR_ATtinyX4__ )
+#define TINY_DEBUG_SERIAL_REGISTER    0x18
+#define TINY_DEBUG_SERIAL_BIT         0
+#elif defined( __AVR_ATtinyX5__ )
+#define TINY_DEBUG_SERIAL_REGISTER    0x18
+#define TINY_DEBUG_SERIAL_BIT         3
+#endif
+
 #if F_CPU == 1000000L
-  typedef TinyDebugSerialWriter_1_9600<0x18,3> TinyDebugSerialWriter_9600;
-  typedef TinyDebugSerialWriter_1_38400<0x18,3> TinyDebugSerialWriter_38400;
-  typedef TinyDebugSerialWriter_1_115200<0x18,3> TinyDebugSerialWriter_115200;
+  typedef TinyDebugSerialWriter_1_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
+  typedef TinyDebugSerialWriter_1_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
+  typedef TinyDebugSerialWriter_1_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
 #elif F_CPU == 8000000L
-  typedef TinyDebugSerialWriter_8_9600<0x18,3> TinyDebugSerialWriter_9600;
-  typedef TinyDebugSerialWriter_8_38400<0x18,3> TinyDebugSerialWriter_38400;
-  typedef TinyDebugSerialWriter_8_115200<0x18,3> TinyDebugSerialWriter_115200;
+  typedef TinyDebugSerialWriter_8_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
+  typedef TinyDebugSerialWriter_8_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
+  typedef TinyDebugSerialWriter_8_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
 #elif F_CPU == 16000000L
-#error 16 MHz is not support for two reasons: The default pin for Serial is also a pin used for the crystal.  The developer has not had time to test at 16 MHz.
+#error 16 MHz is not support for two reasons: 1. The default pin for Serial is also a pin used for the crystal.  2. The developer has not had time to test at 16 MHz.
 /*
   9600...
     6, 90, 2

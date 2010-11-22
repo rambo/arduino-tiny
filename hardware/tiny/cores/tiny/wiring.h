@@ -30,7 +30,9 @@
 
 #include <avr/io.h>
 #include <stdlib.h>
+
 #include "binary.h"
+#include "core_build_options.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -72,7 +74,8 @@ extern "C"{
 #define EXTERNAL 0
 */
 
-/* analogReference constants for ATmega168.  These are NOT correct for the ATtiny84.  The correct values are below.
+/* rmv
+analogReference constants for ATmega168.  These are NOT correct for the ATtiny84 nor for the ATtiny85.  The correct values are below.
 
 // Internal 1.1V Voltage Reference with external capacitor at AREF pin 
 #define INTERNAL 3  
@@ -84,14 +87,37 @@ extern "C"{
 #define EXTERNAL 0  
 */
 
-// Internal 1.1V voltage reference
-#define INTERNAL 2
+
+#if defined(__AVR_ATtinyX4__)
 
 // VCC used as analog reference, disconnected from PA0 (AREF)
-#define DEFAULT 0
+#define DEFAULT (0)
 
 // External voltage reference at PA0 (AREF) pin, internal reference turned off
-#define EXTERNAL 1
+#define EXTERNAL (1)
+
+// Internal 1.1V voltage reference
+#define INTERNAL (2)
+
+#elif defined( __AVR_ATtinyX5__ )
+
+// X 0 0 VCC used as Voltage Reference, disconnected from PB0 (AREF).
+#define DEFAULT (0)
+
+// X 0 1 External Voltage Reference at PB0 (AREF) pin, Internal Voltage Reference turned off.
+#define EXTERNAL (1)
+
+// 0 1 0 Internal 1.1V Voltage Reference.
+#define INTERNAL (2)
+#define INTERNAL1V1 INTERNAL
+
+// 1 1 1 Internal 2.56V Voltage Reference with external bypass capacitor at PB0 (AREF) pin(1).
+#define INTERNAL2V56 (7)
+
+// An alternative for INTERNAL2V56 is (6) ...
+// 1 1 0 Internal 2.56V Voltage Reference without external bypass capacitor, disconnected from PB0 (AREF)(1).
+
+#endif
 
 
 // undefine stdlib's abs if encountered
@@ -130,6 +156,7 @@ typedef unsigned int word;
 typedef uint8_t boolean;
 typedef uint8_t byte;
 
+void initToneTimer(void);
 void init(void);
 
 void pinMode(uint8_t, uint8_t);
