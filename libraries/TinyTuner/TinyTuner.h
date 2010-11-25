@@ -469,13 +469,16 @@ public:
 };
 
 
-#if defined(__AVR_ATtiny84__)
+#if defined( __AVR_ATtiny2313__ )
+  typedef TinyTunerTemplate<0x1B,0> Tiny2313Tuner;
+  typedef Tiny2313Tuner TinyTuner;
+#elif defined( __AVR_ATtiny84__ )
   typedef TinyTunerTemplate<0x16,1> Tiny84Tuner;
   typedef Tiny84Tuner TinyTuner;
-#elif defined(__AVR_ATtiny85__)
+#elif defined( __AVR_ATtiny85__ )
   typedef TinyTunerTemplate<0x16,4> Tiny85Tuner;
   typedef Tiny85Tuner TinyTuner;
-#elif defined(__AVR_ATtiny45__)
+#elif defined( __AVR_ATtiny45__ )
   typedef TinyTunerTemplate<0x16,4> Tiny45Tuner;
   typedef Tiny45Tuner TinyTuner;
 #else
