@@ -36,7 +36,7 @@
 #include "WConstants.h"
 #include "wiring_private.h"
 
-volatile static voidFuncPtr intFunc[EXTERNAL_NUM_INTERRUPTS];
+volatile static voidFuncPtr intFunc[NUMBER_EXTERNAL_INTERRUPTS];
 
 #if defined( MCUCR ) && ! defined( EICRA )
   #define EICRA MCUCR
@@ -46,9 +46,10 @@ volatile static voidFuncPtr intFunc[EXTERNAL_NUM_INTERRUPTS];
   #define EIMSK GIMSK
 #endif
 
-void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode) {
-  if(interruptNum < EXTERNAL_NUM_INTERRUPTS) {
-
+void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode) 
+{
+  if ( interruptNum < NUMBER_EXTERNAL_INTERRUPTS ) 
+  {
     /* 
       If attachInterrupt is called in succession for the same 
       interruptNum but a different userFunc then the following line 
@@ -73,41 +74,75 @@ void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode) {
       
     // Enable the interrupt.
 
-    //only 1 interrupt
-    switch (interruptNum) {
-    case 0:
-      EICRA = (EICRA & ~((1 << ISC00) | (1 << ISC01))) | (mode << ISC00);
-      EIMSK |= (1 << INT0);
-      break;
+    switch ( interruptNum )
+    {
+      #if NUMBER_EXTERNAL_INTERRUPTS >= 1
+        case EXTERNAL_INTERRUPT_0:
+          EICRA = (EICRA & ~((1 << ISC00) | (1 << ISC01))) | (mode << ISC00);
+          EIMSK |= (1 << INT0);
+          break;
+      #endif
+
+      #if NUMBER_EXTERNAL_INTERRUPTS >= 2
+        case EXTERNAL_INTERRUPT_1:
+          EICRA = (EICRA & ~((1 << ISC10) | (1 << ISC11))) | (mode << ISC10);
+          EIMSK |= (1 << INT1);
+          break;
+      #endif
+
+      #if NUMBER_EXTERNAL_INTERRUPTS > 2
+      #error Add handlers for the additional interrupts.
+      #endif
     }
   }
 }
 
-void detachInterrupt(uint8_t interruptNum) {
-  if(interruptNum < EXTERNAL_NUM_INTERRUPTS) {
+void detachInterrupt(uint8_t interruptNum) 
+{
+  if ( interruptNum < NUMBER_EXTERNAL_INTERRUPTS ) 
+  {
     // Disable the interrupt.  (We can't assume that interruptNum is equal
     // to the number of the EIMSK bit to clear, as this isn't true on the 
     // ATmega8.  There, INT0 is 6 and INT1 is 7.)
 
-    //only 1 interrupt
-    switch (interruptNum) {
-    case 0:
-      EIMSK &= ~(1 << INT0);
-      break;;
+    switch (interruptNum) 
+    {
+      #if NUMBER_EXTERNAL_INTERRUPTS >= 1
+        case EXTERNAL_INTERRUPT_0:
+          EIMSK &= ~(1 << INT0);
+          break;;
+      #endif
+
+      #if NUMBER_EXTERNAL_INTERRUPTS >= 2
+        case EXTERNAL_INTERRUPT_1:
+          EIMSK &= ~(1 << INT1);
+          break;;
+      #endif
+
+      #if NUMBER_EXTERNAL_INTERRUPTS > 2
+      #error Add handlers for the additional interrupts.
+      #endif
     }
-      
     intFunc[interruptNum] = 0;
   }
 }
 
-#if defined( EXT_INT0_vect )
-SIGNAL(EXT_INT0_vect) 
-#elif defined( INT0_vect )
-SIGNAL(INT0_vect)
-#else
-#error Add a declaration for the processor's INT0 vector. 
-#endif
+#if NUMBER_EXTERNAL_INTERRUPTS >= 1
+ISR(EXTERNAL_INTERRUPT_0_vect)
 {
-  if(intFunc[EXTERNAL_INT_0])
-    intFunc[EXTERNAL_INT_0]();
+  if(intFunc[EXTERNAL_INTERRUPT_0])
+    intFunc[EXTERNAL_INTERRUPT_0]();
 }
+#endif
+
+#if NUMBER_EXTERNAL_INTERRUPTS >= 2
+ISR(EXTERNAL_INTERRUPT_1_vect)
+{
+  if(intFunc[EXTERNAL_INTERRUPT_1])
+    intFunc[EXTERNAL_INTERRUPT_1]();
+}
+#endif
+
+#if NUMBER_EXTERNAL_INTERRUPTS > 2
+#error Add handlers for the additional interrupts.
+#endif

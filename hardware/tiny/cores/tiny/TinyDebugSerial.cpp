@@ -21,6 +21,7 @@
 
 ==============================================================================*/
 
+#include "core_build_options.h"
 #include "TinyDebugSerial.h"
 
 static TinyDebugSerialWriter stub;
@@ -36,4 +37,6 @@ TinyDebugSerial::TinyDebugSerial( void )
   useStub();
 }
 
+#if defined( DEFAULT_TO_TINY_DEBUG_SERIAL ) && DEFAULT_TO_TINY_DEBUG_SERIAL
 TinyDebugSerial Serial;
+#endif

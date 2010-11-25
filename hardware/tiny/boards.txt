@@ -209,3 +209,72 @@ attiny45at1.build.f_cpu=1000000L
 attiny45at1.build.core=tiny
  
 ###########################################################################
+
+attiny2313at8.name=ATtiny2313 @ 8 MHz
+
+# The following do NOT work...
+# attiny2313at8.upload.using=avrispv2
+# attiny2313at8.upload.using=Pololu USB AVR Programmer
+
+# The following DO work (pick one)...
+# attiny2313at8.upload.protocol=avrispv2
+attiny2313at8.upload.using=pololu
+
+attiny2313at8.upload.maximum_size=2048
+attiny2313at8.upload.speed=19200
+
+# Default clock (slowly rising power; long delay to clock; 8 MHz internal)
+# Int. RC Osc. 8 MHz; Start-up time: 14 CK + 65 ms; [CKSEL=0100 SUT=10]; default value 
+# Brown-out detection disabled; [BODLEVEL=111]
+# Serial program downloading (SPI) enabled; [SPIEN=0]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
+
+attiny2313at8.bootloader.low_fuses=0xE4
+attiny2313at8.bootloader.high_fuses=0x9F
+attiny2313at8.bootloader.extended_fuses=0xFF
+attiny2313at8.bootloader.path=empty
+attiny2313at8.bootloader.file=empty2313at8.hex
+
+attiny2313at8.bootloader.unlock_bits=0x3F
+attiny2313at8.bootloader.lock_bits=0x3F
+
+attiny2313at8.build.mcu=attiny2313
+attiny2313at8.build.f_cpu=8000000L
+attiny2313at8.build.core=tiny
+ 
+###########################################################################
+
+attiny2313at1.name=ATtiny2313 @ 1 MHz
+
+# The following do NOT work...
+# attiny2313at1.upload.using=avrispv2
+# attiny2313at1.upload.using=Pololu USB AVR Programmer
+
+# The following DO work (pick one)...
+# attiny2313at1.upload.protocol=avrispv2
+attiny2313at1.upload.using=pololu
+
+attiny2313at1.upload.maximum_size=2048
+attiny2313at1.upload.speed=19200
+
+# Default clock (slowly rising power; long delay to clock; 8 MHz internal; divide clock by 8)
+# Int. RC Osc. 8 MHz; Start-up time: 14 CK + 65 ms; [CKSEL=0100 SUT=10]; default value 
+# Divide clock by 8 internally; [CKDIV8=0]
+# Brown-out detection disabled; [BODLEVEL=111]
+# Serial program downloading (SPI) enabled; [SPIEN=0]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
+
+attiny2313at1.bootloader.low_fuses=0x64
+attiny2313at1.bootloader.high_fuses=0x9F
+attiny2313at1.bootloader.extended_fuses=0xFF
+attiny2313at1.bootloader.path=empty
+attiny2313at1.bootloader.file=empty2313at1.hex
+
+attiny2313at1.bootloader.unlock_bits=0x3F
+attiny2313at1.bootloader.lock_bits=0x3F
+
+attiny2313at1.build.mcu=attiny2313
+attiny2313at1.build.f_cpu=1000000L
+attiny2313at1.build.core=tiny
+ 
+###########################################################################

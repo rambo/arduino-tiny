@@ -33,7 +33,7 @@ Version Modified By Date     Comments
 
 *************************************************/
 
-#define DEBUG_TONE 1
+#define DEBUG_TONE 0
 
 #include <avr/interrupt.h>
 #include "core_build_options.h"

@@ -26,6 +26,33 @@
 
 
 /*=============================================================================
+  Build options for the ATtiny2313 processor
+=============================================================================*/
+
+#if defined( __AVR_ATtiny2313__ )
+
+/*
+  The old standby ... millis on Timer 0.
+*/
+#define TIMER_TO_USE_FOR_MILLIS                   0
+
+/*
+  Tone goes on whichever timer was not used for millis.
+*/
+#if TIMER_TO_USE_FOR_MILLIS == 1
+#define TIMER_TO_USE_FOR_TONE                     0
+#else
+#define TIMER_TO_USE_FOR_TONE                     1
+#endif
+
+#define HAVE_ADC                                  0
+
+#define DEFAULT_TO_TINY_DEBUG_SERIAL              0
+
+#endif
+
+
+/*=============================================================================
   Build options for the ATtiny84 processor
 =============================================================================*/
 
@@ -48,6 +75,10 @@
 #else
 #define TIMER_TO_USE_FOR_TONE                     1
 #endif
+
+#define HAVE_ADC                                  1
+
+#define DEFAULT_TO_TINY_DEBUG_SERIAL              1
 
 #endif
 
@@ -84,6 +115,10 @@
 #define TIMER_TO_USE_FOR_TONE                     1
 #endif
 
+#define HAVE_ADC                                  1
+
+#define DEFAULT_TO_TINY_DEBUG_SERIAL              1
+
 #endif
 
 
@@ -101,8 +136,11 @@
   Make the ADC optional for low-power applications
 =============================================================================*/
 
-// fix: Put this back to 1
+#if defined( HAVE_ADC ) && HAVE_ADC
 #define INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER    1
+#else
+#define INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER    0
+#endif
 
 
 #endif

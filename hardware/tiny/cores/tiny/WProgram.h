@@ -14,6 +14,7 @@
 #ifdef __cplusplus
 #include "WString.h"
 #include "TinyDebugSerial.h"
+#include "HardwareSerial.h"
 
 uint16_t makeWord(uint16_t w);
 uint16_t makeWord(byte h, byte l);

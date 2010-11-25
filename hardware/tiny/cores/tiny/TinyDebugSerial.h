@@ -498,7 +498,10 @@ class TinyDebugSerialWriter_8_115200 : public TinyDebugSerialWriter
 };
 
 
-#if defined( __AVR_ATtinyX4__ )
+#if defined( __AVR_ATtiny2313__ )
+#define TINY_DEBUG_SERIAL_REGISTER    0x1B
+#define TINY_DEBUG_SERIAL_BIT         1
+#elif defined( __AVR_ATtinyX4__ )
 #define TINY_DEBUG_SERIAL_REGISTER    0x18
 #define TINY_DEBUG_SERIAL_BIT         0
 #elif defined( __AVR_ATtinyX5__ )
@@ -613,7 +616,9 @@ class TinyDebugSerial : public Stream
     using Print::write; // pull in write(str) and write(buf, size) from Print
 };
 
+#if defined( DEFAULT_TO_TINY_DEBUG_SERIAL ) && DEFAULT_TO_TINY_DEBUG_SERIAL
 extern TinyDebugSerial Serial;
+#endif
 
 
 #endif
