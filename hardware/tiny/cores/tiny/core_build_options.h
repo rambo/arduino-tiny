@@ -30,7 +30,7 @@
 =============================================================================*/
 
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-#define INITIALIZE_SECONDARY_TIMERS               0
+#define INITIALIZE_SECONDARY_TIMERS               1
 
 
 /*=============================================================================
