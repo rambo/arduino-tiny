@@ -26,6 +26,14 @@
 
 
 /*=============================================================================
+  Low power / smaller code options
+=============================================================================*/
+
+#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
+#define INITIALIZE_SECONDARY_TIMERS               0
+
+
+/*=============================================================================
   Build options for the ATtiny2313 processor
 =============================================================================*/
 
@@ -133,13 +141,24 @@
 
 
 /*=============================================================================
-  Make the ADC optional for low-power applications
+  Allow the ADC to be optional for low-power applications
 =============================================================================*/
 
-#if defined( HAVE_ADC ) && HAVE_ADC
-#define INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER    1
-#else
-#define INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER    0
+#if ! defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER )
+  #if defined( HAVE_ADC ) && HAVE_ADC
+    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
+  #else
+    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    0
+  #endif
+#endif
+
+
+/*=============================================================================
+  Allow the "secondary timers" to be optional for low-power applications
+=============================================================================*/
+
+#if ! defined( INITIALIZE_SECONDARY_TIMERS )
+  #define INITIALIZE_SECONDARY_TIMERS               1
 #endif
 
 

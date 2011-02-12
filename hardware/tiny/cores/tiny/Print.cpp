@@ -23,8 +23,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "wiring.h"
 
+#include "wiring.h"
 #include "Print.h"
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -101,10 +101,28 @@ void Print::print(double n, int digits)
   printFloat(n, digits);
 }
 
-void Print::println(void)
+int Print::print( fstr_t* s )
+{
+  int rv;
+  char ch;
+
+  rv = 0;
+  ch = pgm_read_byte( s );
+  while ( ch != 0 )
+  {
+    write( ch );
+    ++s;
+    ++rv;
+    ch = pgm_read_byte( s );
+  }
+  return( rv );
+}
+
+int Print::println(void)
 {
   print('\r');
   print('\n');  
+  return( 2 );
 }
 
 void Print::println(const String &s)
@@ -159,6 +177,15 @@ void Print::println(double n, int digits)
 {
   print(n, digits);
   println();
+}
+
+int Print::println( fstr_t* s )
+{
+  int rv;
+
+  rv = print( s );
+  rv += println();
+  return( rv );
 }
 
 // Private Methods /////////////////////////////////////////////////////////////

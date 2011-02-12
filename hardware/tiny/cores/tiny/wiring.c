@@ -81,11 +81,26 @@ ISR(MILLISTIMER_OVF_vect)
   unsigned long m = millis_timer_millis;
   unsigned char f = millis_timer_fract;
 
+/* rmv: The code below generates considerably less code (emtpy Sketch is 326 versus 304)...
+
   m += MILLIS_INC;
   f += FRACT_INC;
   if (f >= FRACT_MAX) {
     f -= FRACT_MAX;
     m += 1;
+  }
+...rmv */
+
+  f += FRACT_INC;
+
+  if (f >= FRACT_MAX) 
+  {
+    f -= FRACT_MAX;
+    m = m + MILLIS_INC + 1;
+  }
+  else
+  {
+    m += MILLIS_INC;
   }
 
   millis_timer_fract = f;
@@ -107,7 +122,8 @@ unsigned long millis()
   return m;
 }
 
-unsigned long micros() {
+unsigned long micros() 
+{
   unsigned long m;
   uint8_t oldSREG = SREG, t;
   
@@ -206,8 +222,10 @@ void initToneTimer(void)
   // Ensure the timer is in the same state as power-up
   ToneTimer_SetToPowerup();
 
-  // Prepare the timer for PWM
-  initToneTimerInternal();
+  #if defined( INITIALIZE_SECONDARY_TIMERS ) && INITIALIZE_SECONDARY_TIMERS
+    // Prepare the timer for PWM
+    initToneTimerInternal();
+  #endif
 }
 
 void init(void)
@@ -230,10 +248,12 @@ void init(void)
   MillisTimer_EnableOverflowInterrupt();
 
   // Initialize the timer used for Tone
-  initToneTimerInternal();
+  #if defined( INITIALIZE_SECONDARY_TIMERS ) && INITIALIZE_SECONDARY_TIMERS
+    initToneTimerInternal();
+  #endif
 
   // Initialize the ADC
-  #if defined( INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER ) && INITIALZIE_ANALOG_TO_DIGITAL_CONVERTER
+  #if defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER ) && INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
     ADC_PrescalerSelect( ADC_ARDUINO_PRESCALER );
     ADC_Enable();
   #endif

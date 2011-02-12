@@ -27,6 +27,7 @@
 
 #include <inttypes.h>
 #include <stdio.h> // for size_t
+#include <avr/pgmspace.h>
 
 #include "WString.h"
 
@@ -50,6 +51,17 @@ public:
 
 /* ...Printable */
     
+typedef struct
+{
+  char c;
+}
+fstr_t;
+
+/* rmv: Use the macro below in preparation for the next Arduino release.
+# define FSTR(s) ((fstr_t*)PSTR(s))
+*/
+# define F(s) ((fstr_t*)PSTR(s))
+
 class Print
 {
   private:
@@ -69,6 +81,7 @@ class Print
     void print(long, int = DEC);
     void print(unsigned long, int = DEC);
     void print(double, int = 2);
+    int  print( fstr_t* );
 
     void println(const String &s);
     void println(const char[]);
@@ -79,7 +92,8 @@ class Print
     void println(long, int = DEC);
     void println(unsigned long, int = DEC);
     void println(double, int = 2);
-    void println(void);
+    int  println( fstr_t* );
+    int  println(void);
   public:
     /* Printable...*/
     void println(const _Printable &obj)

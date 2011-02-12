@@ -498,16 +498,127 @@ class TinyDebugSerialWriter_8_115200 : public TinyDebugSerialWriter
 };
 
 
+template
+  <
+    uint8_t SER_REG,
+    uint8_t SER_BIT
+  >
+class TinyDebugSerialWriter_16_9600 : public TinyDebugSerialWriter
+{
+  protected:
+
+    virtual void init( void )
+    {
+      asm volatile
+      (
+        "sbi   %[serreg]-1, %[serbit]"            "\n\t"
+        "sbi   %[serreg], %[serbit]"              "\n\t"
+        : 
+        : 
+          [serreg] "I" ( SER_REG ),
+          [serbit] "I" ( SER_BIT )
+        :
+      );
+    }
+
+    virtual void write( uint8_t value )
+    {
+      TinyDebugSerialWriterBangOneByte( value, SER_REG, SER_BIT, B10110, B11011, 6, 90, 2 );
+    }
+};
+
+
+template
+  <
+    uint8_t SER_REG,
+    uint8_t SER_BIT
+  >
+class TinyDebugSerialWriter_16_38400 : public TinyDebugSerialWriter
+{
+  protected:
+
+    virtual void init( void )
+    {
+      asm volatile
+      (
+        "sbi   %[serreg]-1, %[serbit]"            "\n\t"
+        "sbi   %[serreg], %[serbit]"              "\n\t"
+        : 
+        : 
+          [serreg] "I" ( SER_REG ),
+          [serbit] "I" ( SER_BIT )
+        :
+      );
+    }
+
+    virtual void write( uint8_t value )
+    {
+      TinyDebugSerialWriterBangOneByte( value, SER_REG, SER_BIT, B10110, B11011, 5, 25, 1 );
+    }
+};
+
+
+template
+  <
+    uint8_t SER_REG,
+    uint8_t SER_BIT
+  >
+class TinyDebugSerialWriter_16_115200 : public TinyDebugSerialWriter
+{
+  protected:
+
+    virtual void init( void )
+    {
+      asm volatile
+      (
+        "sbi   %[serreg]-1, %[serbit]"            "\n\t"
+        "sbi   %[serreg], %[serbit]"              "\n\t"
+        : 
+        : 
+          [serreg] "I" ( SER_REG ),
+          [serbit] "I" ( SER_BIT )
+        :
+      );
+    }
+
+    virtual void write( uint8_t value )
+    {
+      TinyDebugSerialWriterBangOneByte( value, SER_REG, SER_BIT, B11110, B11111, 0, 39, 1 );
+    }
+};
+
+
 #if defined( __AVR_ATtiny2313__ )
-#define TINY_DEBUG_SERIAL_REGISTER    0x1B
-#define TINY_DEBUG_SERIAL_BIT         1
+
+  #define TINY_DEBUG_SERIAL_REGISTER    0x1B
+  #define TINY_DEBUG_SERIAL_BIT         1
+
 #elif defined( __AVR_ATtinyX4__ )
-#define TINY_DEBUG_SERIAL_REGISTER    0x18
-#define TINY_DEBUG_SERIAL_BIT         0
+
+  #if F_CPU <= 8000000L
+    // port B bit 0 (PB0)
+    #define TINY_DEBUG_SERIAL_REGISTER    0x18
+    #define TINY_DEBUG_SERIAL_BIT         0
+  #else
+    // port A bit 0 (PA0)
+    #define TINY_DEBUG_SERIAL_REGISTER    0x1B
+    #define TINY_DEBUG_SERIAL_BIT         0
+  #endif
+
 #elif defined( __AVR_ATtinyX5__ )
-#define TINY_DEBUG_SERIAL_REGISTER    0x18
-#define TINY_DEBUG_SERIAL_BIT         3
+
+  #if F_CPU <= 8000000L
+    // port B bit 3 (PB3)
+    #define TINY_DEBUG_SERIAL_REGISTER    0x18
+    #define TINY_DEBUG_SERIAL_BIT         3
+  #else
+    // port B bit 2 (PB2)
+    #define TINY_DEBUG_SERIAL_REGISTER    0x18
+    #define TINY_DEBUG_SERIAL_BIT         2
+  #endif
+
 #endif
+
 
 #if F_CPU == 1000000L
   typedef TinyDebugSerialWriter_1_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
@@ -518,7 +629,9 @@ class TinyDebugSerialWriter_8_115200 : public TinyDebugSerialWriter
   typedef TinyDebugSerialWriter_8_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
   typedef TinyDebugSerialWriter_8_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
 #elif F_CPU == 16000000L
-#error 16 MHz is not support for two reasons: 1. The default pin for Serial is also a pin used for the crystal.  2. The developer has not had time to test at 16 MHz.
+  typedef TinyDebugSerialWriter_16_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
+  typedef TinyDebugSerialWriter_16_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
+  typedef TinyDebugSerialWriter_16_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
 /*
   9600...
     6, 90, 2
