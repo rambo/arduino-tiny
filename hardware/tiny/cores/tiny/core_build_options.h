@@ -144,11 +144,15 @@
   Allow the ADC to be optional for low-power applications
 =============================================================================*/
 
-#if ! defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER )
-  #if defined( HAVE_ADC ) && HAVE_ADC
-    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-  #else
-    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    0
+#if ! defined( HAVE_ADC )
+  #define HAVE_ADC   0
+#endif
+
+#if ! HAVE_ADC
+  #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
+#else
+  #if ! defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER )
+    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
   #endif
 #endif
 
