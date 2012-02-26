@@ -624,14 +624,17 @@ class TinyDebugSerialWriter_16_115200 : public TinyDebugSerialWriter
   typedef TinyDebugSerialWriter_1_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
   typedef TinyDebugSerialWriter_1_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
   typedef TinyDebugSerialWriter_1_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
+  #define TINY_DEBUG_SERIAL_SUPPORTED 1
 #elif F_CPU == 8000000L
   typedef TinyDebugSerialWriter_8_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
   typedef TinyDebugSerialWriter_8_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
   typedef TinyDebugSerialWriter_8_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
+  #define TINY_DEBUG_SERIAL_SUPPORTED 1
 #elif F_CPU == 16000000L
   typedef TinyDebugSerialWriter_16_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
   typedef TinyDebugSerialWriter_16_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
   typedef TinyDebugSerialWriter_16_115200<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_115200;
+  #define TINY_DEBUG_SERIAL_SUPPORTED 1
 /*
   9600...
     6, 90, 2
@@ -648,14 +651,15 @@ class TinyDebugSerialWriter_16_115200 : public TinyDebugSerialWriter
 */
 #endif
 
+
+#if TINY_DEBUG_SERIAL_SUPPORTED
+
 extern TinyDebugSerialWriter_9600 tdsw9600;
 extern TinyDebugSerialWriter_38400 tdsw38400;
 extern TinyDebugSerialWriter_115200 tdsw115200;
 
-
 void TinyDebugSerialBadBaud( void ) __attribute__((error("Serial (TinyDebugSerial) supports three baud rates: 9600, 38400, or 115200.")));
 void TinyDebugSerialBaudMustBeConstant( void ) __attribute__((error("The baud rate for Serial (TinyDebugSerial) cannot be changed at run-time.  Use 9600, 38400, or 115200.")));
-
 
 class TinyDebugSerial : public Stream
 {
@@ -729,8 +733,8 @@ class TinyDebugSerial : public Stream
     using Print::write; // pull in write(str) and write(buf, size) from Print
 };
 
-#if defined( DEFAULT_TO_TINY_DEBUG_SERIAL ) && DEFAULT_TO_TINY_DEBUG_SERIAL
 extern TinyDebugSerial Serial;
+
 #endif
 
 
