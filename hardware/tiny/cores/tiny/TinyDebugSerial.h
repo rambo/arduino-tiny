@@ -733,7 +733,9 @@ class TinyDebugSerial : public Stream
     using Print::write; // pull in write(str) and write(buf, size) from Print
 };
 
+#if DEFAULT_TO_TINY_DEBUG_SERIAL
 extern TinyDebugSerial Serial;
+#endif
 
 #endif
 
