@@ -100,6 +100,36 @@ attiny84at1.build.core=tiny
  
 ###########################################################################
 
+attiny24at16.name=ATtiny24 @ 16 MHz  (external crystal; BOD disabled)
+
+# The following do NOT work...
+# attiny24at16.upload.using=avrispv2
+# attiny24at16.upload.using=Pololu USB AVR Programmer
+
+# The following DO work (pick one)...
+attiny24at16.upload.using=arduino:arduinoisp
+# attiny24at16.upload.protocol=avrispv2
+# attiny24at16.upload.using=pololu
+
+attiny24at16.upload.maximum_size=2048
+
+# Ext. Crystal Osc.; Frequency 8.0-    MHz; Start-up time PWRDWN/RESET: 16K CK/14 CK + 65 ms;  [CKSEL=1111 SUT=11]
+# Brown-out detection disabled; [BODLEVEL=111]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
+# Serial program downloading (SPI) enabled; [SPIEN=0]
+
+attiny24at16.bootloader.low_fuses=0xFF
+attiny24at16.bootloader.high_fuses=0xD7
+attiny24at16.bootloader.extended_fuses=0xFF
+attiny24at16.bootloader.path=empty
+attiny24at16.bootloader.file=empty24at16.hex
+
+attiny24at16.build.mcu=attiny24
+attiny24at16.build.f_cpu=16000000L
+attiny24at16.build.core=tiny
+ 
+###########################################################################
+
 attiny85at16e.name=ATtiny85 @ 16 MHz  (external crystal; 4.3 V BOD)
 
 # The following do NOT work...
