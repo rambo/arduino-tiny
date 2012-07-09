@@ -10,6 +10,7 @@
 #include "core_build_options.h"
 #include "core_pins.h"
 #include "wiring.h"
+#include "pins_arduino.h"
 
 #ifdef __cplusplus
 #include "WCharacter.h"

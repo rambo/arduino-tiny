@@ -67,8 +67,10 @@ class Print
   private:
     void printNumber(unsigned long, uint8_t);
     void printFloat(double, uint8_t);
+  protected:
+    void setWriteError(int err = 1) { /*write_error = err;*/ }
   public:
-    virtual void write(uint8_t) = 0;
+    virtual size_t write(uint8_t) = 0;
     virtual void write(const char *str);
     virtual void write(const uint8_t *buffer, size_t size);
     

@@ -82,4 +82,11 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_mode_PGM + (P))) )
 #define portPcMaskRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
 
+#if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || (__AVR_ATtiny85__)
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 5) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p) 5
+#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 5) ? (&PCMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCMSKbit(p) (p)
+#endif
+
 #endif

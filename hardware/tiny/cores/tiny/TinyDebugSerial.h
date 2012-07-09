@@ -725,9 +725,10 @@ class TinyDebugSerial : public Stream
     {
     }
 
-    virtual void write( uint8_t c )
+    virtual size_t write( uint8_t c )
     {
       _writer->write( c );
+      return( 1 );
     }
 
     using Print::write; // pull in write(str) and write(buf, size) from Print
