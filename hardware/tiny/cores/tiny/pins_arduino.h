@@ -82,11 +82,34 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_mode_PGM + (P))) )
 #define portPcMaskRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
 
-#if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || (__AVR_ATtiny85__)
+#if defined(__AVR_ATtinyX5__)
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 5) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) 5
+#define digitalPinToPCICRbit(p) (PCIE)
 #define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 5) ? (&PCMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCMSKbit(p) (p)
+#endif
+
+#if defined(__AVR_ATtinyX4__)
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
+#define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSKbit(p) (((p) <= 2) ? (p) : (10 - (p)))
+#endif
+
+#if defined(__AVR_ATtiny4313__)
+#define digitalPinToPCX(p,s1,s2,s3,s4,s5) \
+    (((p) >= 0) \
+        ? (((p) <=  1) ? (s1)  /*  0 -  1  ==>  D0 - D1 */  \
+        : (((p) <=  3) ? (s2)  /*  2 -  3  ==>  A1 - A0 */  \
+        : (((p) <=  8) ? (s3)  /*  4 -  8  ==>  D2 - D6 */  \
+        : (((p) <= 16) ? (s4)  /*  9 - 16  ==>  B0 - B7 */  \
+        : (s5))))) \
+        : (s5))
+//                                                   s1 D     s2 A     s3 D     s4 B
+#define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
+#define digitalPinToPCICRbit(p) digitalPinToPCX( p, PCIE2,   PCIE1,   PCIE2,   PCIE0,   0    )
+#define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK2, &PCMSK1, &PCMSK2, &PCMSK0, NULL )
+#define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       3-p,     p-2,     p-9,     0    )
 #endif
 
 #endif
