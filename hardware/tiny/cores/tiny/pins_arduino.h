@@ -47,6 +47,12 @@
 #define PORT_B_ID 1
 #endif
 
+#if defined( __AVR_ATtiny1634__ )
+#define PORT_A_ID 1
+#define PORT_B_ID 2
+#define PORT_C_ID 2
+#endif
+
 #define NOT_A_PIN 0
 #define NOT_A_PORT 0
 
@@ -114,5 +120,25 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK2, &PCMSK1, &PCMSK2, &PCMSK0, NULL )
 #define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       3-p,     p-2,     p-9,     0    )
 #endif
+
+
+// TODO: Account for the fact that PC3 is RESET and thus cannot actually be used as a pin...
+#if defined(__AVR_ATtiny1634__)
+#define digitalPinToPCX(p,s1,s2,s3,s4,s5) \
+    (((p) >= 0) \
+        ? (((p) <   1) ? (s1)  /*  0  -  0  ==>  B0      */  \
+        : (((p) <=  7) ? (s2)  /*  1  -  8  ==>  A7 - A0 */  \
+        : (((p) <=  8) ? (s3)  /*  9  - 14  ==>  C5 - C0 */  \
+        : (((p) <= 17) ? (s4)  /*  14 - 17  ==>  B0 - B7 */  \
+        : (s5))))) \
+        : (s5))
+//                                                   s1 b     s2 A     s3 c     s4 B
+#define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
+#define digitalPinToPCICRbit(p) digitalPinToPCX( p, PCIE1,   PCIE0,   PCIE2,   PCIE1,   0    )
+#define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK1, &PCMSK0, &PCMSK2, &PCMSK1, NULL )
+#define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       8-p,     14-p,    17-p,    0    )
+#endif
+
+
 
 #endif
