@@ -96,6 +96,9 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define digitalPinToPCMSKbit(p) (((p) <= 2) ? (p) : (10 - (p)))
 #endif
 
+/**
+ * TODO: Shouldn't this be __AVR_ATtinyX313__ ??
+ */
 #if defined(__AVR_ATtiny4313__)
 #define digitalPinToPCX(p,s1,s2,s3,s4,s5) \
     (((p) >= 0) \
