@@ -122,21 +122,21 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #endif
 
 
-// TODO: Account for the fact that PC3 is RESET and thus cannot actually be used as a pin...
 #if defined(__AVR_ATtiny1634__)
-#define digitalPinToPCX(p,s1,s2,s3,s4,s5) \
+#define digitalPinToPCX(p,s1,s2,s3,s4,s5,s6) \
     (((p) >= 0) \
         ? (((p) <   1) ? (s1)  /*  0  -  0  ==>  B0      */  \
-        : (((p) <=  7) ? (s2)  /*  1  -  8  ==>  A7 - A0 */  \
-        : (((p) <=  8) ? (s3)  /*  9  - 14  ==>  C5 - C0 */  \
-        : (((p) <= 17) ? (s4)  /*  15 - 17  ==>  B3 - B1 */  \
-        : (s5))))) \
-        : (s5))
-//                                                   s1 b     s2 A     s3 c     s4 B
-#define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
-#define digitalPinToPCICRbit(p) digitalPinToPCX( p, PCIE1,   PCIE0,   PCIE2,   PCIE1,   0    )
-#define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK1, &PCMSK0, &PCMSK2, &PCMSK1, NULL )
-#define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       8-p,     14-p,    17-p,    0    )
+        : (((p) <=  8) ? (s2)  /*  1  -  8  ==>  A7 - A0 */  \
+        : (((p) <= 10) ? (s3)  /*  9  - 10  ==>  C5 - C3 */  \
+        : (((p) <= 13) ? (s4)  /*  11 - 13  ==>  C2 - C0 */  \
+        : (((p) <= 16) ? (s5)  /*  14 - 16  ==>  B3 - B1 */  \
+        : (s6))))) \
+        : (s6))
+//                                                   s1 b     s2 A     s3 C     s3 C      s5 B
+#define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
+#define digitalPinToPCICRbit(p) digitalPinToPCX( p, PCIE1,   PCIE0,   PCIE2,   PCIE2,   PCIE1,   0    )
+#define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK1, &PCMSK0, &PCMSK2, &PCMSK2, &PCMSK1, NULL )
+#define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       8-p,     10-p+4,  13-p,    16-p+1,    0    )
 #endif
 
 
