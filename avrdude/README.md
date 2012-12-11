@@ -2,7 +2,7 @@
 
 You need to add the config section in avrdude.conf to your the avrdude.conf you are using, on OSX it would be
 
-    /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/
+    /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf
 
 ## TODO
 
