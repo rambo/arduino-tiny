@@ -132,11 +132,11 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
         : (((p) <= 16) ? (s5)  /*  14 - 16  ==>  B3 - B1 */  \
         : (s6))))) \
         : (s6))
-//                                                   s1 b     s2 A     s3 C     s3 C      s5 B
+//                                                   s1 b     s2 A     s3 C     s3 C     s5 B
 #define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
 #define digitalPinToPCICRbit(p) digitalPinToPCX( p, PCIE1,   PCIE0,   PCIE2,   PCIE2,   PCIE1,   0    )
 #define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK1, &PCMSK0, &PCMSK2, &PCMSK2, &PCMSK1, NULL )
-#define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       8-p,     10-p+4,  13-p,    16-p+1,    0    )
+#define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       8-p,     10-p+4,  13-p,    16-p+1,  0    )
 #endif
 
 
