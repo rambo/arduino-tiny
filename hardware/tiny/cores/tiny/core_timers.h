@@ -81,6 +81,14 @@
 #include "core_timers_ATtinyX5.h"
 #endif
 
+/*=============================================================================
+  Veneer for the two ATtiny1634 timers
+=============================================================================*/
+
+#if defined( __AVR_ATtinyX5__ )
+#include "core_timers_ATtiny1634.h"
+#endif
+
 
 /*=============================================================================
   Aliases for the interrupt service routine vector numbers so the code 
