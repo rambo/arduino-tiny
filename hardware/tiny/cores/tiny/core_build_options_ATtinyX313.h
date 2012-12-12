@@ -1,3 +1,5 @@
+#ifndef core_build_options_ATtinyX313_h
+#define core_build_options_ATtinyX313_h
 
 /*
   The old standby ... millis on Timer 0.
@@ -16,3 +18,5 @@
 #define HAVE_ADC                                  0
 
 #define DEFAULT_TO_TINY_DEBUG_SERIAL              0
+
+#endif

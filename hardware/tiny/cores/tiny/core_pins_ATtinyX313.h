@@ -1,3 +1,8 @@
+#ifndef core_pins_ATtinyX313_h
+#define core_pins_ATtinyX313_h
+
+#include "core_build_options.h"
+
 /*=============================================================================
   Pin definitions for the ATtinyX313
 =============================================================================*/
@@ -53,3 +58,5 @@
 #define CORE_PWM3_CHANNEL   B
 
 #define CORE_PWM_COUNT      (4)
+
+#endif

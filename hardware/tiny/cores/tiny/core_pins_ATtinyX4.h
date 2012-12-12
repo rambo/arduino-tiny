@@ -1,5 +1,5 @@
-#ifndef core_pins_ATtinyX_h
-#define core_pins_ATtinyX_h
+#ifndef core_pins_ATtinyX4_h
+#define core_pins_ATtinyX4_h
 
 #include "core_build_options.h"
 

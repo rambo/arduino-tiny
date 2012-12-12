@@ -1,3 +1,13 @@
+#ifndef core_timers_ATtinyX313_h
+#define core_timers_ATtinyX313_h
+
+#include <avr/io.h>
+#include <binary.h>
+
+#include "core_pins.h"
+#include "core_build_options.h"
+#include "core_macros.h"
+
 /*=============================================================================
   Veneer for the two ATtinyX313 timers
 =============================================================================*/
@@ -309,3 +319,5 @@ __attribute__((always_inline)) static inline uint8_t Timer1_IsOverflowSet( void 
 {
   return( (TIFR & (1<<TOV1)) != 0 );
 }
+
+#endif

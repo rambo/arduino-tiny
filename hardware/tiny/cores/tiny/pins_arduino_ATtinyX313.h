@@ -1,3 +1,5 @@
+#ifndef Pins_Arduino_ATtinyX313_h
+#define Pins_Arduino_ATtinyX313_h
 
 #define PORT_A_ID 1
 #define PORT_B_ID 2
@@ -16,3 +18,5 @@
 #define digitalPinToPCICRbit(p) digitalPinToPCX( p, PCIE2,   PCIE1,   PCIE2,   PCIE0,   0    )
 #define digitalPinToPCMSK(p)    digitalPinToPCX( p, &PCMSK2, &PCMSK1, &PCMSK2, &PCMSK0, NULL )
 #define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       3-p,     p-2,     p-9,     0    )
+
+#endif

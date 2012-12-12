@@ -1,5 +1,5 @@
-#ifndef core_build_options_ATtinyX_h
-#define core_build_options_ATtinyX_h
+#ifndef core_build_options_ATtinyX4_h
+#define core_build_options_ATtinyX4_h
 
 /*=============================================================================
   Build options for the ATtiny84 processor

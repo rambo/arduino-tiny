@@ -1,6 +1,5 @@
-#ifndef Pins_Arduino_ATtinyX_h
-#define Pins_Arduino_ATtinyX_h
-
+#ifndef Pins_Arduino_ATtinyX4_h
+#define Pins_Arduino_ATtinyX4_h
 
 #include "core_build_options.h"
 

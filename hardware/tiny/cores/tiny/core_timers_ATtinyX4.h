@@ -1,6 +1,5 @@
-#ifndef core_timers_ATtinyX_h
-#define core_timers_ATtinyX_h
-
+#ifndef core_timers_ATtinyX4_h
+#define core_timers_ATtinyX4_h
 
 #include <avr/io.h>
 #include <binary.h>
