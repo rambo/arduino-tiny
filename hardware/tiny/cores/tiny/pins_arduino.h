@@ -41,7 +41,7 @@
 #endif
 
 #if defined( __AVR_ATtinyX5__ )
-#define PORT_B_ID 1
+#include "pins_arduino_ATtinyX5.h"
 #endif
 
 #define NOT_A_PIN 0
@@ -79,12 +79,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_mode_PGM + (P))) )
 #define portPcMaskRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
 
-#if defined(__AVR_ATtinyX5__)
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 5) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (PCIE)
-#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 5) ? (&PCMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCMSKbit(p) (p)
-#endif
 
 
 #endif
