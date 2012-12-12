@@ -1,3 +1,7 @@
+#include <avr/io.h>
+#include "pins_arduino.h"
+#include "wiring_private.h"
+
 // On the Arduino board, digital pins are also used
 // for the analog output (software PWM).  Analog input
 // pins are a separate set.
