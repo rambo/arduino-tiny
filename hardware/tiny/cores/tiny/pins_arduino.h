@@ -37,8 +37,7 @@
 #endif
 
 #if defined( __AVR_ATtinyX4__ )
-#define PORT_A_ID 1
-#define PORT_B_ID 2
+#include "pins_arduino_ATtinyX4.h"
 #endif
 
 #if defined( __AVR_ATtinyX5__ )
@@ -85,13 +84,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define digitalPinToPCICRbit(p) (PCIE)
 #define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 5) ? (&PCMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCMSKbit(p) (p)
-#endif
-
-#if defined(__AVR_ATtinyX4__)
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
-#define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) <= 2) ? (p) : (10 - (p)))
 #endif
 
 
