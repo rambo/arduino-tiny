@@ -85,7 +85,7 @@
   Veneer for the two ATtiny1634 timers
 =============================================================================*/
 
-#if defined( __AVR_ATtinyX5__ )
+#if defined( __AVR_ATtiny1634__ )
 #include "core_timers_ATtiny1634.h"
 #endif
 
