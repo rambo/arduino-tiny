@@ -25,7 +25,7 @@
 //             GND 10|    |11  VCC
 //                   +----+
 //
-// Reminder: Pins 6 - 1 are ADC pins
+// Reminder: Pins 6 - 1 & 20 - 15 are ADC pins
 // * indicates PWM port
 
 // these arrays map port names (e.g. port B) to the
