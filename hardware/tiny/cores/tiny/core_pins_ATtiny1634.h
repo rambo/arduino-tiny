@@ -32,7 +32,7 @@
 #define CORE_RESET_INCLUDED   (1)
 
 #define CORE_ANALOG_FIRST     (CORE_DIGITAL_LAST+1)
-#define CORE_ANALOG_COUNT     (12)
+#define CORE_ANALOG_COUNT     (13) // 12 + internal temperature sensor
 #define CORE_ANALOG_LAST      (CORE_ANALOG_FIRST+CORE_ANALOG_COUNT-1)
 
 #define CORE_INT0_PIN  PIN_C2
