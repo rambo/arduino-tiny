@@ -22,5 +22,8 @@
 ==============================================================================*/
 
 #include "TinyDebugSerial.h"
+#if TINY_DEBUG_SERIAL_SUPPORTED
 
 TinyDebugSerialWriter_115200 tdsw115200;
+
+#endif

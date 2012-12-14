@@ -22,7 +22,10 @@
 ==============================================================================*/
 
 #include "TinyDebugSerial.h"
+#if TINY_DEBUG_SERIAL_SUPPORTED
 
 void TinyDebugSerialWriterInternalBug( void ) { }
 void TinyDebugSerialBadBaud( void ) { }
 void TinyDebugSerialBaudMustBeConstant( void ) { }
+
+#endif
