@@ -56,9 +56,4 @@ __attribute__((always_inline)) static inline void ADC_SetInputChannel( adc_ic_t 
 }
 
 
-
-
-#error "Not implemented"
-
-
 #endif
