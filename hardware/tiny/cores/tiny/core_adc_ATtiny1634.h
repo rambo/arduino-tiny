@@ -10,6 +10,8 @@
 /*=============================================================================
   Veneer for the ATtiny1634 ADC
 =============================================================================*/
+// First get the common ADC config
+#include "core_adc_common.h"
 
 
 #error "Not implemented"

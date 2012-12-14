@@ -1,5 +1,5 @@
-#ifndef core_adc_ATtinyX4_et_ATtinyX5_h
-#define core_adc_ATtinyX4_et_ATtinyX5_h
+#ifndef core_adc_common_h
+#define core_adc_common_h
 
 #include <avr/io.h>
 #include <binary.h>
