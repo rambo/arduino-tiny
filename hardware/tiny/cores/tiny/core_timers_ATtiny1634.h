@@ -9,7 +9,7 @@
 #include "core_macros.h"
 
 /*=============================================================================
-  Veneer for the two ATtiny1634 timers
+  Veneer for the two ATtiny1634 timers (Copied from X313
 =============================================================================*/
 
 #define Timer0_OutputComparePinA  CORE_OC0A_PIN
