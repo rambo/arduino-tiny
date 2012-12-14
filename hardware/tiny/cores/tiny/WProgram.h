@@ -90,11 +90,11 @@ const static uint8_t A10 = CORE_ANALOG_FIRST + 10;
 const static uint8_t A11 = CORE_ANALOG_FIRST + 11;
 #endif
 
-#if CORE_ANALOG_COUNT >= 12
+#if CORE_ANALOG_COUNT >= 13
 const static uint8_t A12 = CORE_ANALOG_FIRST + 12;
 #endif
 
-#if CORE_ANALOG_COUNT >= 13
+#if CORE_ANALOG_COUNT >= 14
 #error Update the A* definitions for the selected processor.
 #endif
 
