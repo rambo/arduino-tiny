@@ -7,11 +7,11 @@ You will need one fresher than the stock Arduino one.
   1. Download & Install Crosspack: http://www.obdev.at/products/crosspack/download.html
   2. Copy files (supposing bash as terminal)
 
-    rm -rf /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/* && pushd /usr/local/CrossPack-AVR/ && ( tar cf - * | ( cd /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/; tar xvpf -) ) && popd
+        rm -rf /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/* && pushd /usr/local/CrossPack-AVR/ && ( tar cf - * | ( cd /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/; tar xvpf -) ) && popd
 
-  3. Fix [issue #604][http://code.google.com/p/arduino/issues/detail?id=604&start=200] by patching wiring.h 
+  3. Fix [issue #604](http://code.google.com/p/arduino/issues/detail?id=604&start=200) by patching wiring.h 
 
-    for file in $( find /Applications/ -path '*/hardware/*/cores/*/wiring.h' ); do patch $file < round.patch; done;
+        for file in $( find /Applications/ -path '*/hardware/*/cores/*/wiring.h' ); do patch $file < round.patch; done;
 
 ## Linux
 
