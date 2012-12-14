@@ -619,7 +619,7 @@ class TinyDebugSerialWriter_16_115200 : public TinyDebugSerialWriter
 
 #endif
 
-
+#if defined(TINY_DEBUG_SERIAL_REGISTER) && defined(TINY_DEBUG_SERIAL_BIT)
 #if F_CPU == 1000000L
   typedef TinyDebugSerialWriter_1_9600<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_9600;
   typedef TinyDebugSerialWriter_1_38400<TINY_DEBUG_SERIAL_REGISTER,TINY_DEBUG_SERIAL_BIT> TinyDebugSerialWriter_38400;
@@ -649,6 +649,7 @@ class TinyDebugSerialWriter_16_115200 : public TinyDebugSerialWriter
     2, 18, 2
     9, 3, 1
 */
+#endif
 #endif
 
 
