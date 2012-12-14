@@ -60,22 +60,6 @@ __attribute__((always_inline)) static inline void ADC_SetInputChannel( adc_ic_t 
   ADMUX = (ADMUX & ~MASK4(MUX3,MUX2,MUX1,MUX0)) | (ic << MUX0);
 }
 
-__attribute__((always_inline)) static inline void ADC_StartConversion( void )
-{
-  ADCSRA |= MASK1( ADSC );
-}
-
-__attribute__((always_inline)) static inline uint8_t ADC_ConversionInProgress( void )
-{
-  return( (ADCSRA & (1<<ADSC)) != 0 );
-}
-
-__attribute__((always_inline)) static inline uint16_t ADC_GetDataRegister( void )
-{
-  return( ADC );
-}
-
-
 
 
 #endif

@@ -59,4 +59,20 @@ __attribute__((always_inline)) static inline void ADC_Enable( void )
   ADCSRA |= MASK1( ADEN );
 }
 
+__attribute__((always_inline)) static inline void ADC_StartConversion( void )
+{
+  ADCSRA |= MASK1( ADSC );
+}
+
+__attribute__((always_inline)) static inline uint8_t ADC_ConversionInProgress( void )
+{
+  return( (ADCSRA & (1<<ADSC)) != 0 );
+}
+
+__attribute__((always_inline)) static inline uint16_t ADC_GetDataRegister( void )
+{
+  return( ADC );
+}
+
+
 #endif
