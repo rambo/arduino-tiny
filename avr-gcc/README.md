@@ -13,10 +13,12 @@ You will need one fresher than the stock Arduino one.
 
         for file in $( find /Applications/ -path '*/hardware/*/cores/*/wiring.h' ); do patch $file < round.patch; done;
 
+Remember to update [avrdude](https://github.com/rambo/arduino-tiny/tree/attiny1634/avrdude/) too.
+
 ## Linux
 
-See above, adapt as neccessary.
+See above, adapt directories and source of recent avr-gcc binaries as neccessary.
 
 ## Windows
 
-See above for the general idea, you will have to figure out how to handle the copying and patching by yourself.
+See above for the general idea, you will have to figure out how to handle this by yourself.

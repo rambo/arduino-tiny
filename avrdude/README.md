@@ -4,7 +4,7 @@ You need to add the config section in avrdude.conf to your the avrdude.conf you 
 
     cp /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf.backup && cat avrdude_tiny1634.conf >>/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf
 
-This must be done *after* updating [avr-gcc](../avr-gcc/)
+This must be done *after* updating [avr-gcc](https://github.com/rambo/arduino-tiny/tree/attiny1634/avr-gcc/)
 
 ## TODO:
 
