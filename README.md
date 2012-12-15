@@ -1,9 +1,9 @@
 # Instructions for the ATtiny1634 branch
 
 Since this branch is still under development I suggest cloning the repository
-rather than downloading a [zip](https://github.com/rambo/arduino-tiny/zipball/attiny1634)
+rather than downloading a [zip](https://github.com/rambo/arduino-tiny/zipball/attiny1634).
 
-Remember to change your actibe branch to "attiny1634" after cloning.
+Remember to change your active branch to "attiny1634" after cloning.
 
 ## Installing
 
