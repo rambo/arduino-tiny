@@ -624,9 +624,9 @@ attiny1634at12e.upload.maximum_size=16384
 # Serial program downloading (SPI) enabled; [SPIEN=0]
 # BOD enabled: BODACT 10 BODPD 10
 
-attiny1634at12e.bootloader.low_fuses=0xE2
+attiny1634at12e.bootloader.low_fuses=0x6F
 attiny1634at12e.bootloader.high_fuses=0xD4
-attiny1634at12e.bootloader.extended_fuses=0xEA
+attiny1634at12e.bootloader.extended_fuses=0xF4
 attiny1634at12e.bootloader.path=empty
 attiny1634at12e.bootloader.file=empty_all.hex
 
@@ -654,9 +654,9 @@ attiny1634at8.upload.maximum_size=16384
 # Brown-out detection disabled; [BODLEVEL=111]
 # Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
 
-attiny1634at8.bootloader.low_fuses=0xE2
-attiny1634at8.bootloader.high_fuses=0xD7
-attiny1634at8.bootloader.extended_fuses=0xFF
+attiny1634at8.bootloader.low_fuses=0x62
+attiny1634at8.bootloader.high_fuses=0xD2
+attiny1634at8.bootloader.extended_fuses=0xFE
 attiny1634at8.bootloader.path=empty
 attiny1634at8.bootloader.file=empty_all.hex
 
@@ -687,24 +687,12 @@ attiny1634at1.upload.maximum_size=16384
 
 attiny1634at1.bootloader.low_fuses=0x62
 attiny1634at1.bootloader.high_fuses=0xD7
-attiny1634at1.bootloader.extended_fuses=0xFF
+attiny1634at1.bootloader.extended_fuses=0xFE
 attiny1634at1.bootloader.path=empty
 attiny1634at1.bootloader.file=empty_all.hex
 
 attiny1634at1.build.mcu=attiny1634
 attiny1634at1.build.f_cpu=1000000L
 attiny1634at1.build.core=tiny
-
-
-
-
-
-
-
-
-
-
-
-
 
 
