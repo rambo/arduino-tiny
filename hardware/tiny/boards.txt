@@ -31,7 +31,7 @@ attiny84at16.bootloader.low_fuses=0xFF
 attiny84at16.bootloader.high_fuses=0xD4
 attiny84at16.bootloader.extended_fuses=0xFF
 attiny84at16.bootloader.path=empty
-attiny84at16.bootloader.file=empty84at16.hex
+attiny84at16.bootloader.file=empty_all.hex
 
 attiny84at16.build.mcu=attiny84
 attiny84at16.build.f_cpu=16000000L
@@ -61,7 +61,7 @@ attiny84at8.bootloader.low_fuses=0xE2
 attiny84at8.bootloader.high_fuses=0xD7
 attiny84at8.bootloader.extended_fuses=0xFF
 attiny84at8.bootloader.path=empty
-attiny84at8.bootloader.file=empty84at8.hex
+attiny84at8.bootloader.file=empty_all.hex
 
 attiny84at8.build.mcu=attiny84
 attiny84at8.build.f_cpu=8000000L
@@ -92,7 +92,7 @@ attiny84at1.bootloader.low_fuses=0x62
 attiny84at1.bootloader.high_fuses=0xD7
 attiny84at1.bootloader.extended_fuses=0xFF
 attiny84at1.bootloader.path=empty
-attiny84at1.bootloader.file=empty84at1.hex
+attiny84at1.bootloader.file=empty_all.hex
 
 attiny84at1.build.mcu=attiny84
 attiny84at1.build.f_cpu=1000000L
@@ -122,7 +122,7 @@ attiny44at8.bootloader.low_fuses=0xE2
 attiny44at8.bootloader.high_fuses=0xD7
 attiny44at8.bootloader.extended_fuses=0xFF
 attiny44at8.bootloader.path=empty
-attiny44at8.bootloader.file=empty44at8.hex
+attiny44at8.bootloader.file=empty_all.hex
 
 attiny44at8.build.mcu=attiny44
 attiny44at8.build.f_cpu=8000000L
@@ -154,7 +154,7 @@ attiny44at1.bootloader.low_fuses=0x62
 attiny44at1.bootloader.high_fuses=0xD7
 attiny44at1.bootloader.extended_fuses=0xFF
 attiny44at1.bootloader.path=empty
-attiny44at1.bootloader.file=empty44at1.hex
+attiny44at1.bootloader.file=empty_all.hex
 
 attiny44at1.build.mcu=attiny44
 attiny44at1.build.f_cpu=1000000L
@@ -185,7 +185,7 @@ attiny24at16.bootloader.low_fuses=0xFF
 attiny24at16.bootloader.high_fuses=0xD7
 attiny24at16.bootloader.extended_fuses=0xFF
 attiny24at16.bootloader.path=empty
-attiny24at16.bootloader.file=empty24at16.hex
+attiny24at16.bootloader.file=empty_all.hex
 
 attiny24at16.build.mcu=attiny24
 attiny24at16.build.f_cpu=16000000L
@@ -215,7 +215,7 @@ attiny85at16e.bootloader.low_fuses=0xFF
 attiny85at16e.bootloader.high_fuses=0xD4
 attiny85at16e.bootloader.extended_fuses=0xFF
 attiny85at16e.bootloader.path=empty
-attiny85at16e.bootloader.file=empty85at16.hex
+attiny85at16e.bootloader.file=empty_all.hex
 
 attiny85at16e.build.mcu=attiny85
 attiny85at16e.build.f_cpu=16000000L
@@ -245,7 +245,7 @@ attiny85at16p.bootloader.low_fuses=0xC1
 attiny85at16p.bootloader.high_fuses=0xD4
 attiny85at16p.bootloader.extended_fuses=0xFF
 attiny85at16p.bootloader.path=empty
-#attiny85at16p.bootloader.file=empty85at16.hex
+#attiny85at16p.bootloader.file=empty_all.hex
 attiny85at16p.bootloader.file=empty_all.hex
 
 attiny85at16p.build.mcu=attiny85
@@ -276,7 +276,7 @@ attiny85at8.bootloader.low_fuses=0xE2
 attiny85at8.bootloader.high_fuses=0xD7
 attiny85at8.bootloader.extended_fuses=0xFF
 attiny85at8.bootloader.path=empty
-#attiny85at8.bootloader.file=empty85at8.hex
+#attiny85at8.bootloader.file=empty_all.hex
 attiny85at8.bootloader.file=empty_all.hex
 
 attiny85at8.build.mcu=attiny85
@@ -308,7 +308,7 @@ attiny85at1.bootloader.low_fuses=0x62
 attiny85at1.bootloader.high_fuses=0xD7
 attiny85at1.bootloader.extended_fuses=0xFF
 attiny85at1.bootloader.path=empty
-#attiny85at1.bootloader.file=empty85at1.hex
+#attiny85at1.bootloader.file=empty_all.hex
 attiny85at1.bootloader.file=empty_all.hex
 
 attiny85at1.build.mcu=attiny85
@@ -339,7 +339,7 @@ attiny45at8.bootloader.low_fuses=0xE2
 attiny45at8.bootloader.high_fuses=0xD7
 attiny45at8.bootloader.extended_fuses=0xFF
 attiny45at8.bootloader.path=empty
-attiny45at8.bootloader.file=empty45at8.hex
+attiny45at8.bootloader.file=empty_all.hex
 
 attiny45at8.build.mcu=attiny45
 attiny45at8.build.f_cpu=8000000L
@@ -370,7 +370,7 @@ attiny45at1.bootloader.low_fuses=0x62
 attiny45at1.bootloader.high_fuses=0xD7
 attiny45at1.bootloader.extended_fuses=0xFF
 attiny45at1.bootloader.path=empty
-attiny45at1.bootloader.file=empty45at1.hex
+attiny45at1.bootloader.file=empty_all.hex
 
 attiny45at1.build.mcu=attiny45
 attiny45at1.build.f_cpu=1000000L
@@ -400,7 +400,7 @@ attiny85at128.bootloader.low_fuses=0xC4
 attiny85at128.bootloader.high_fuses=0xD6
 attiny85at128.bootloader.extended_fuses=0xFF
 attiny85at128.bootloader.path=empty
-attiny85at128.bootloader.file=empty85at1.hex
+attiny85at128.bootloader.file=empty_all.hex
 
 attiny85at128.build.mcu=attiny85
 attiny85at128.build.f_cpu=128000L
@@ -430,7 +430,7 @@ attiny25at8.bootloader.low_fuses=0xE2
 attiny25at8.bootloader.high_fuses=0xD7
 attiny25at8.bootloader.extended_fuses=0xFF
 attiny25at8.bootloader.path=empty
-attiny25at8.bootloader.file=empty25at8.hex
+attiny25at8.bootloader.file=empty_all.hex
 
 attiny25at8.build.mcu=attiny25
 attiny25at8.build.f_cpu=8000000L
@@ -460,7 +460,7 @@ attiny25at1.bootloader.low_fuses=0x62
 attiny25at1.bootloader.high_fuses=0xD7
 attiny25at1.bootloader.extended_fuses=0xFF
 attiny25at1.bootloader.path=empty
-attiny25at1.bootloader.file=empty25at1.hex
+attiny25at1.bootloader.file=empty_all.hex
 
 attiny25at1.build.mcu=attiny25
 attiny25at1.build.f_cpu=1000000L
@@ -491,7 +491,7 @@ attiny4313at8.bootloader.low_fuses=0xE4
 attiny4313at8.bootloader.high_fuses=0x9F
 attiny4313at8.bootloader.extended_fuses=0xFF
 attiny4313at8.bootloader.path=empty
-attiny4313at8.bootloader.file=empty4313at8.hex
+attiny4313at8.bootloader.file=empty_all.hex
 
 attiny4313at8.build.mcu=attiny4313
 attiny4313at8.build.f_cpu=8000000L
@@ -524,7 +524,7 @@ attiny4313at1.bootloader.low_fuses=0x64
 attiny4313at1.bootloader.high_fuses=0x9F
 attiny4313at1.bootloader.extended_fuses=0xFF
 attiny4313at1.bootloader.path=empty
-attiny4313at1.bootloader.file=empty4313at1.hex
+attiny4313at1.bootloader.file=empty_all.hex
 
 attiny4313at1.build.mcu=attiny4313
 attiny4313at1.build.f_cpu=1000000L
@@ -556,7 +556,7 @@ attiny2313at8.bootloader.low_fuses=0xE4
 attiny2313at8.bootloader.high_fuses=0x9F
 attiny2313at8.bootloader.extended_fuses=0xFF
 attiny2313at8.bootloader.path=empty
-attiny2313at8.bootloader.file=empty2313at8.hex
+attiny2313at8.bootloader.file=empty_all.hex
 
 attiny2313at8.build.mcu=attiny2313
 attiny2313at8.build.f_cpu=8000000L
@@ -588,7 +588,7 @@ attiny2313at1.bootloader.low_fuses=0x64
 attiny2313at1.bootloader.high_fuses=0x9F
 attiny2313at1.bootloader.extended_fuses=0xFF
 attiny2313at1.bootloader.path=empty
-attiny2313at1.bootloader.file=empty2313at1.hex
+attiny2313at1.bootloader.file=empty_all.hex
 
 attiny2313at1.build.mcu=attiny2313
 attiny2313at1.build.f_cpu=1000000L
@@ -628,7 +628,7 @@ attiny1634at12e.bootloader.low_fuses=0xE2
 attiny1634at12e.bootloader.high_fuses=0xD4
 attiny1634at12e.bootloader.extended_fuses=0xEA
 attiny1634at12e.bootloader.path=empty
-attiny1634at12e.bootloader.file=empty1634.hex
+attiny1634at12e.bootloader.file=empty_all.hex
 
 attiny1634at12e.build.mcu=attiny1634
 attiny1634at12e.build.f_cpu=12000000L
@@ -658,7 +658,7 @@ attiny1634at8.bootloader.low_fuses=0xE2
 attiny1634at8.bootloader.high_fuses=0xD7
 attiny1634at8.bootloader.extended_fuses=0xFF
 attiny1634at8.bootloader.path=empty
-attiny1634at8.bootloader.file=empty1634.hex
+attiny1634at8.bootloader.file=empty_all.hex
 
 attiny1634at8.build.mcu=attiny1634
 attiny1634at8.build.f_cpu=8000000L
@@ -689,7 +689,7 @@ attiny1634at1.bootloader.low_fuses=0x62
 attiny1634at1.bootloader.high_fuses=0xD7
 attiny1634at1.bootloader.extended_fuses=0xFF
 attiny1634at1.bootloader.path=empty
-attiny1634at1.bootloader.file=empty1634.hex
+attiny1634at1.bootloader.file=empty_all.hex
 
 attiny1634at1.build.mcu=attiny1634
 attiny1634at1.build.f_cpu=1000000L
