@@ -3,12 +3,12 @@
  *
  * Compile for the target mcu with
  *
- *  avr-gcc -g -Wall -O2 -mmcu=<target> -nostartfiles -Wa,-adhlns=./empty.lst empty.c -o empty.elf
+ *  avr-gcc -g -Wall -O2 -mmcu=<target> -nostartfiles empty.c -o empty.elf
  *  avr-objcopy  -O ihex empty.elf empty.hex
- *  rm empty.elf empty.lst empty.asm
+ *  rm empty.elf empty.asm
  *  mv empty.hex empty<target>.hex
  *
- * To disassemble
+ * To disassemble (if you want to see what the compiler did)
  *
  *  avr-objdump -Dx empty.elf > empty.asm
  *
