@@ -1,6 +1,9 @@
 /**
  * This is a dummy bootloader for burning fuses
  *
+ * NOTE: The empty_all.hex (which is handcrafted) should work fine, there definitely is no need for separate HEX file
+ * for each fuse combination.
+ *
  * Compile for the target mcu with
  *
  *  avr-gcc -g -Wall -O2 -mmcu=<target> -nostartfiles empty.c -o empty.elf
