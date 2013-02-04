@@ -7,7 +7,8 @@ Remember to change your active branch to "attiny1634" after cloning.
 
 ## Installing
 
-  1. See the [readme.txt](readme.txt) for upstream instructions but do not follow them yet.
+  0. (optional) Install [Teensyduino](http://www.pjrc.com/teensy/td_download.html), this will provide some nice extra features (like RAM usage estimates)
+  1. See the [readme.txt](readme.txt) for upstream instructions to get the general idea of how a core is installed.
   2. Get a copy of the repo (clone recommended, zip works too)
   3. Locate/Create the "hardware" directory as in upstream instructions, then copy or link
      (depending on if you have zipped copy or cloned repo) the repo hardware/tiny and hardware/tools
