@@ -587,34 +587,37 @@ class TinyDebugSerialWriter_16_115200 : public TinyDebugSerialWriter
     }
 };
 
+#if !defined(TINY_DEBUG_SERIAL_REGISTER) && !defined(TINY_DEBUG_SERIAL_BIT)
 
-#if defined( __AVR_ATtinyX313__ )
+  #if defined( __AVR_ATtinyX313__ )
 
-  #define TINY_DEBUG_SERIAL_REGISTER    0x1B
-  #define TINY_DEBUG_SERIAL_BIT         1
-
-#elif defined( __AVR_ATtinyX4__ )
-
-  #if F_CPU <= 8000000L
-    // port B bit 0 (PB0)
-    #define TINY_DEBUG_SERIAL_REGISTER    0x18
-    #define TINY_DEBUG_SERIAL_BIT         0
-  #else
-    // port A bit 0 (PA0)
     #define TINY_DEBUG_SERIAL_REGISTER    0x1B
-    #define TINY_DEBUG_SERIAL_BIT         0
-  #endif
+    #define TINY_DEBUG_SERIAL_BIT         1
 
-#elif defined( __AVR_ATtinyX5__ )
+  #elif defined( __AVR_ATtinyX4__ )
 
-  #if F_CPU <= 8000000L
-    // port B bit 3 (PB3)
-    #define TINY_DEBUG_SERIAL_REGISTER    0x18
-    #define TINY_DEBUG_SERIAL_BIT         3
-  #else
-    // port B bit 2 (PB2)
-    #define TINY_DEBUG_SERIAL_REGISTER    0x18
-    #define TINY_DEBUG_SERIAL_BIT         2
+    #if F_CPU <= 8000000L
+      // port B bit 0 (PB0)
+      #define TINY_DEBUG_SERIAL_REGISTER    0x18
+      #define TINY_DEBUG_SERIAL_BIT         0
+    #else
+      // port A bit 0 (PA0)
+      #define TINY_DEBUG_SERIAL_REGISTER    0x1B
+      #define TINY_DEBUG_SERIAL_BIT         0
+    #endif
+
+  #elif defined( __AVR_ATtinyX5__ )
+
+    #if F_CPU <= 8000000L
+      // port B bit 3 (PB3)
+      #define TINY_DEBUG_SERIAL_REGISTER    0x18
+      #define TINY_DEBUG_SERIAL_BIT         3
+    #else
+      // port B bit 2 (PB2)
+      #define TINY_DEBUG_SERIAL_REGISTER    0x18
+      #define TINY_DEBUG_SERIAL_BIT         2
+    #endif
+
   #endif
 
 #endif
