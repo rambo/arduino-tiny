@@ -45,6 +45,7 @@
 #endif
 
 #if defined( __AVR_ATtiny1634__ )
+#define USE_PUE_REGISTER 1
 #include "pins_arduino_ATtiny1634.h"
 #endif
 
@@ -62,7 +63,9 @@ extern const uint8_t PROGMEM port_to_mode_PGM[];
 extern const uint8_t PROGMEM port_to_input_PGM[];
 extern const uint8_t PROGMEM port_to_output_PGM[];
 extern const uint8_t PROGMEM port_to_pcmask_PGM[];
-
+#if defined( USE_PUE_REGISTER )
+extern const uint8_t PROGMEM port_to_pullup_PGM[];
+#endif
 extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
 // extern const uint8_t PROGMEM digital_pin_to_bit_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
@@ -82,7 +85,9 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_input_PGM + (P))) )
 #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_mode_PGM + (P))) )
 #define portPcMaskRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
-
+#if defined( USE_PUE_REGISTER )
+#define portPullupRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pullup_PGM + (P))) )
+#endif
 
 
 #endif
