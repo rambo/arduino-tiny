@@ -23,6 +23,7 @@
 
   Modified 28-08-2009 for attiny84 R.Wiersma
   Modified 14-10-2009 for attiny45 Saposoft
+  Modified 26-2-2015 for attiny1634 S.Konde
 */
 
 #include "wiring_private.h"
@@ -31,29 +32,79 @@
 #include "core_timers.h"
 #include "PwmTimer.h"
 
+
+
+#if defined( USE_PUE_REGISTER )
 void pinMode(uint8_t pin, uint8_t mode)
 {
-	uint8_t bit = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t *reg;
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
+  volatile uint8_t *reg, *out, *pue;
 
-	if (port == NOT_A_PIN) return;
+  if (port == NOT_A_PIN) return;
 
-	// JWS: can I let the optimizer do this?
-	reg = portModeRegister(port);
+  // JWS: can I let the optimizer do this?
+  reg = portModeRegister(port);
+  out = portOutputRegister(port);
+  pue = portPullupRegister(port);
 
-	if (mode == INPUT) { 
-		uint8_t oldSREG = SREG;
-    cli();
-		*reg &= ~bit;
-		SREG = oldSREG;
-	} else {
-		uint8_t oldSREG = SREG;
-    cli();
-		*reg |= bit;
-		SREG = oldSREG;
-	}
+  if (mode == INPUT) { 
+    uint8_t oldSREG = SREG;
+                cli();
+    *reg &= ~bit;
+    *out &= ~bit;
+    *pue &= ~bit;
+    SREG = oldSREG;
+  } else if (mode == INPUT_PULLUP) {
+    uint8_t oldSREG = SREG;
+                cli();
+    *reg &= ~bit;
+    *out |= bit;
+    *pue |= bit;
+    SREG = oldSREG;
+  } else {
+    uint8_t oldSREG = SREG;
+                cli();
+    *pue &= ~bit;
+    *reg |= bit;
+    SREG = oldSREG;
+  }
 }
+#else 
+
+void pinMode(uint8_t pin, uint8_t mode)
+{
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
+  volatile uint8_t *reg, *out;
+
+  if (port == NOT_A_PIN) return;
+
+  // JWS: can I let the optimizer do this?
+  reg = portModeRegister(port);
+  out = portOutputRegister(port);
+
+  if (mode == INPUT) { 
+    uint8_t oldSREG = SREG;
+                cli();
+    *reg &= ~bit;
+    *out &= ~bit;
+    SREG = oldSREG;
+  } else if (mode == INPUT_PULLUP) {
+    uint8_t oldSREG = SREG;
+                cli();
+    *reg &= ~bit;
+    *out |= bit;
+    SREG = oldSREG;
+  } else {
+    uint8_t oldSREG = SREG;
+                cli();
+    *reg |= bit;
+    SREG = oldSREG;
+  }
+}
+
+#endif
 
 // Forcing this inline keeps the callers from having to push their own stuff
 // on the stack. It is a good performance win and only takes 1 more byte per
@@ -105,11 +156,13 @@ __attribute__((always_inline)) static inline void turnOffPWM( uint8_t pin )
 
 }
 
+#if defined( USE_PUE_REGISTER )
+
 void digitalWrite(uint8_t pin, uint8_t val)
 {
 	uint8_t bit = digitalPinToBitMask(pin);
 	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t *out;
+	volatile uint8_t *out, *pue;
 
 	if (port == NOT_A_PIN) return;
 
@@ -118,19 +171,51 @@ void digitalWrite(uint8_t pin, uint8_t val)
   turnOffPWM( pin );
 
 	out = portOutputRegister(port);
+  pue = portPullupRegister(port);
 
 	if (val == LOW) {
 		uint8_t oldSREG = SREG;
     cli();
 		*out &= ~bit;
+    *pue &= ~bit; //Turn off the pullups
 		SREG = oldSREG;
 	} else {
 		uint8_t oldSREG = SREG;
     cli();
 		*out |= bit;
+    *pue &= ~bit;
 		SREG = oldSREG;
 	}
 }
+#else 
+
+void digitalWrite(uint8_t pin, uint8_t val)
+{
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
+  volatile uint8_t *out;
+
+  if (port == NOT_A_PIN) return;
+
+  // If the pin that support PWM output, we need to turn it off
+  // before doing a digital write.
+  turnOffPWM( pin );
+
+  out = portOutputRegister(port);
+
+  if (val == LOW) {
+    uint8_t oldSREG = SREG;
+    cli();
+    *out &= ~bit;
+    SREG = oldSREG;
+  } else {
+    uint8_t oldSREG = SREG;
+    cli();
+    *out |= bit;
+    SREG = oldSREG;
+  }
+}
+#endif
 
 int digitalRead(uint8_t pin)
 {
