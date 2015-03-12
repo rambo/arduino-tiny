@@ -20,6 +20,9 @@
 #if F_CPU == 16000000
   // 16 MHz / 128 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   ADC_Prescaler_Value_128
+#elif F_CPU == 12000000
+  // 12 MHz / 128 = 93.75 KHz
+  #define ADC_ARDUINO_PRESCALER   ADC_Prescaler_Value_128
 #elif F_CPU == 8000000
   // 8 MHz / 64 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   ADC_Prescaler_Value_64
