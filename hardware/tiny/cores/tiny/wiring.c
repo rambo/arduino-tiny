@@ -157,9 +157,27 @@ void delayMicroseconds(unsigned int us)
   // calling avrlib's delay_us() function with low values (e.g. 1 or
   // 2 microseconds) gives delays longer than desired.
   //delay_us(us);
+#if F_CPU >= 20000000L
+  // for the 20 MHz clock on rare Arduino boards
 
-#if F_CPU >= 16000000L
-  // for the 16 MHz clock on most Arduino boards
+  // for a one-microsecond delay, simply wait 2 cycle and return. The overhead
+  // of the function call yields a delay of exactly a one microsecond.
+  __asm__ __volatile__ (
+    "nop" "\n\t"
+    "nop"); //just waiting 2 cycle
+  if (--us == 0)
+    return;
+
+  // the following loop takes a 1/5 of a microsecond (4 cycles)
+  // per iteration, so execute it five times for each microsecond of
+  // delay requested.
+  us = (us<<2) + us; // x5 us
+
+  // account for the time taken in the preceeding commands.
+  us -= 2;
+
+#elif F_CPU >= 14500000L
+  // for the 16 MHz clock on most Arduino boards. Compare to 14.5 to catch 14.7456 UART clock.
 
   // for a one-microsecond delay, simply return.  the overhead
   // of the function call yields a delay of approximately 1 1/8 us.
@@ -173,6 +191,20 @@ void delayMicroseconds(unsigned int us)
 
   // account for the time taken in the preceeding commands.
   us -= 2;
+#elif F_CPU >= 11000000L
+  // for 12 mhz (1634 at max spec'ed speed, or if 12mhz in use for USB). Check against 11 mhz to catch the 11.0592 UART clock.
+  // for a one-microsecond delay, simply return.  the overhead
+  // of the function call yields a delay of approximately 1.5  us.
+  if (--us == 0)
+    return;
+
+  // the following loop takes a 1/3 of a microsecond (4 cycles)
+  // per iteration, so execute it three times for each microsecond of
+  // delay requested.
+  us = (us<<1) + us; // x3 us
+
+  // account for the time taken in the preceeding commands.
+  us -= 3;
 #else
   // for the 8 MHz internal clock on the ATmega168
 
